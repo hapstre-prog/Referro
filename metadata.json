@@ -1,0 +1,6 @@
+{
+  "name": "Relay AI Referral Network",
+  "description": "Production-ready real estate referral network with dual-engine monetization, AI network matching, freemium credits, deal pipeline, and compliant payouts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
