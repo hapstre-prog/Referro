@@ -8,7 +8,7 @@ export const ReferralAIAssistant: React.FC = () => {
   const [messages, setMessages] = useState<Array<{ role: 'ai' | 'user'; text: string; action?: { label: string; tab: string } }>>([
     {
       role: 'ai',
-      text: `Hello ${user.name}! I'm Referral AI, your intelligence partner on Relay. I help you structure referral leads, score high-value matches, draft warm intros, and optimize your 25% referral commission splits. How can I help today?`,
+      text: `Hello ${user.name}! I'm Referral AI, your intelligence partner on Referro. I help you structure referral leads, score high-value matches, draft warm intros, and optimize your 25% referral commission splits. How can I help today?`,
       action: { label: 'Explore Miami Relocation Match', tab: 'give' }
     }
   ]);

@@ -15,7 +15,7 @@ export const WelcomeModal: React.FC = () => {
         </div>
 
         <h3 className="text-2xl font-extrabold text-slate-900 tracking-tight mb-2">
-          Welcome to Relay
+          Welcome to Referro
         </h3>
 
         <p className="text-slate-600 font-medium text-sm sm:text-base mb-6">

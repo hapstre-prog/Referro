@@ -182,7 +182,7 @@ export const DealsView: React.FC = () => {
                   <strong className="text-slate-900">${selectedDeal.grossReferralFee.toLocaleString()}</strong>
                 </div>
                 <div className="flex justify-between text-slate-600">
-                  <span>Relay Platform Success Fee ({selectedDeal.platformFeePct}% of referral):</span>
+                  <span>Referro Platform Success Fee ({selectedDeal.platformFeePct}% of referral):</span>
                   <strong className="text-slate-500">-${selectedDeal.platformFeeAmount.toLocaleString()}</strong>
                 </div>
                 <div className="pt-3 border-t border-slate-200 flex justify-between items-center">

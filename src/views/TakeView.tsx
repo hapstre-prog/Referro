@@ -697,7 +697,7 @@ export const TakeView: React.FC = () => {
                   <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
                     <span className="flex items-center">
                       <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 mr-1" />
-                      Relay Escrow Protection
+                      Referro Escrow Protection
                     </span>
                     <button
                       onClick={() => handleUnlockCandidate(cand)}

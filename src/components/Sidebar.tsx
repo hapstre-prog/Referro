@@ -100,8 +100,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
             <Layers className="w-5 h-5 text-indigo-400" />
           </div>
           <div className="leading-tight">
-            <div className="font-bold text-slate-900 text-sm">Relay</div>
-            <div className="text-[10px] text-slate-400 font-medium">relay.network</div>
+            <div className="font-bold text-slate-900 text-sm">Referro</div>
+            <div className="text-[10px] text-slate-400 font-medium">referro.network</div>
           </div>
         </div>
         {onMobileClose ? (

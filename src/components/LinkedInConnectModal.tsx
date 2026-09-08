@@ -44,7 +44,7 @@ export const LinkedInConnectModal: React.FC = () => {
         </h3>
 
         <p className="text-slate-600 font-medium text-sm mb-6">
-          Relay uses your LinkedIn network to find the right referral partners — agents who can help your clients buy, sell, or relocate across state lines.
+          Referro uses your LinkedIn network to find the right referral partners — agents who can help your clients buy, sell, or relocate across state lines.
         </p>
 
         <div className="space-y-3 mb-6">

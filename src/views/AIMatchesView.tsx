@@ -64,7 +64,7 @@ export const AIMatchesView: React.FC = () => {
         specializationScore: isLuxury ? 94 : 80,
         networkProximityScore: c.degree === 1 ? 100 : 75
       },
-      matchReasons: reasons.length > 0 ? reasons : ['Verified real estate licensee on Relay platform'],
+      matchReasons: reasons.length > 0 ? reasons : ['Verified real estate licensee on Referro platform'],
       connectionPath: c.degree === 1 ? 'Direct 1st-Degree Connection' : `Connected via ${c.connectedVia?.name || 'Colleague'} (2nd Degree)`
     };
   }).sort((a, b) => b.overallScore - a.overallScore);

@@ -55,7 +55,7 @@ export const Navbar: React.FC<{ onMobileMenuToggle?: () => void }> = ({ onMobile
           </div>
           <div>
             <div className="flex items-center space-x-1.5">
-              <span className="font-extrabold text-lg text-slate-900 tracking-tight">Relay</span>
+              <span className="font-extrabold text-lg text-slate-900 tracking-tight">Referro</span>
               <span className="text-[10px] uppercase tracking-wider font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200">
                 Network
               </span>

@@ -48,7 +48,7 @@ export const CreditsView: React.FC = () => {
   };
 
   const handleCopyInvite = () => {
-    navigator.clipboard?.writeText('https://relay.network/invite/alex-morgan-kw');
+    navigator.clipboard?.writeText('https://referro.network/invite/alex-morgan-kw');
     setCopiedInvite(true);
     setTimeout(() => setCopiedInvite(false), 2500);
   };
@@ -288,7 +288,7 @@ export const CreditsView: React.FC = () => {
             Invite a Colleague, Receive +{adminConfig.referralCreditsGrant} Free Credits
           </h3>
           <p className="text-xs text-slate-300 leading-relaxed">
-            Expand your collective deal sourcing. When another licensed agent joins Relay through your personal link, you both receive complimentary credits.
+            Expand your collective deal sourcing. When another licensed agent joins Referro through your personal link, you both receive complimentary credits.
           </p>
         </div>
 

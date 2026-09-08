@@ -648,7 +648,7 @@ export const SEED_MESSAGES: Message[] = [
     senderName: 'David Miller',
     senderAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
     recipientId: DEMO_USER.id,
-    text: "Hi Alex! Thank you so much for the introduction. I just connected with Evelyn — they are lovely. We have scheduled private showings for 4 homes in Westlake Hills this Saturday. I signed the 25% referral agreement in Relay.",
+    text: "Hi Alex! Thank you so much for the introduction. I just connected with Evelyn — they are lovely. We have scheduled private showings for 4 homes in Westlake Hills this Saturday. I signed the 25% referral agreement in Referro.",
     timestamp: '2026-08-22T11:40:00Z',
     relatedReferralId: 'ref_contract_2026_01'
   }

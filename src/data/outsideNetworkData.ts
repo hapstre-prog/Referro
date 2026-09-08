@@ -46,9 +46,9 @@ export const OUTSIDE_NETWORK_CANDIDATES: AIMatchCandidate[] = [
       'Represents 3 verified family office buyers actively seeking Pacific Heights & Bay Area luxury estates',
       'Specialist in high-value properties ($7M+) active for >90 days with aggressive buyer network syndication',
       'Sotheby’s National Top 0.1% Producer with active bi-coastal tech executive migration pipeline',
-      'Guaranteed 25% referral fee compliance via standard Relay escrow agreement'
+      'Guaranteed 25% referral fee compliance via standard Referro escrow agreement'
     ],
-    connectionPath: 'Outside Network (Relay Verified National Partner)',
+    connectionPath: 'Outside Network (Referro Verified National Partner)',
     recommendedStrategy: 'Execute 25% reciprocal referral agreement targeting Aspen-SF relocation corridor.',
     outperformance: {
       salesVolumeMultiplier: '4.3x Level 1 Volume',
@@ -96,7 +96,7 @@ export const OUTSIDE_NETWORK_CANDIDATES: AIMatchCandidate[] = [
       'Closed 5 off-market transactions over $6M in the last two quarters',
       'Zero listing expiration track record across premier West Coast portfolios'
     ],
-    connectionPath: 'Outside Network (Relay Verified National Partner)',
+    connectionPath: 'Outside Network (Referro Verified National Partner)',
     recommendedStrategy: 'Leverage private client buyer registry for discreet off-market representation.',
     outperformance: {
       salesVolumeMultiplier: '3.8x Level 1 Volume',
@@ -144,7 +144,7 @@ export const OUTSIDE_NETWORK_CANDIDATES: AIMatchCandidate[] = [
       'Expert in matching buyers to properties requiring historic restoration and architectural pedigree',
       'Flawless DRE and legal disclosure compliance record with 100% on-time closings'
     ],
-    connectionPath: 'Outside Network (Relay Verified National Partner)',
+    connectionPath: 'Outside Network (Referro Verified National Partner)',
     recommendedStrategy: 'Co-broke outreach directly into East Coast family office distribution channels.',
     outperformance: {
       salesVolumeMultiplier: '5.0x Level 1 Volume',
@@ -192,7 +192,7 @@ export const OUTSIDE_NETWORK_CANDIDATES: AIMatchCandidate[] = [
       'Certified Luxury Home Marketing Specialist (GUILD Elite Member)',
       'Immediate access to private tech buyer Slack groups and Silicon Valley executive syndicates'
     ],
-    connectionPath: 'Outside Network (Relay Verified National Partner)',
+    connectionPath: 'Outside Network (Referro Verified National Partner)',
     recommendedStrategy: 'Position opportunity directly to pre-IPO executive relocation lists.',
     outperformance: {
       salesVolumeMultiplier: '3.5x Level 1 Volume',
@@ -240,7 +240,7 @@ export const OUTSIDE_NETWORK_CANDIDATES: AIMatchCandidate[] = [
       'Full concierge buyer onboarding team ensuring seamless 25% referral escrow closing',
       'Maintains relationships with sovereign wealth funds and European family offices'
     ],
-    connectionPath: 'Outside Network (Relay Verified National Partner)',
+    connectionPath: 'Outside Network (Referro Verified National Partner)',
     recommendedStrategy: 'Leverage Christie’s auction clientele and global luxury collector databases.',
     outperformance: {
       salesVolumeMultiplier: '4.6x Level 1 Volume',
@@ -288,7 +288,7 @@ export const OUTSIDE_NETWORK_CANDIDATES: AIMatchCandidate[] = [
       'Flawless 100% compliant DRE closing track record with expedited escrow processing',
       'Strong co-broke reputation among national luxury brokers with dedicated transaction coordinator'
     ],
-    connectionPath: 'Outside Network (Relay Verified National Partner)',
+    connectionPath: 'Outside Network (Referro Verified National Partner)',
     recommendedStrategy: 'Deploy targeted outbound outreach to top East Coast financial executive buyer rosters.',
     outperformance: {
       salesVolumeMultiplier: '4.0x Level 1 Volume',
@@ -335,7 +335,7 @@ export const OUTSIDE_NETWORK_CANDIDATES: AIMatchCandidate[] = [
       'Brokered 4 of the top 10 Manhattan-to-California tech partner relocations in 2025',
       'Average sale price $9.2M with average 17 days from introduction to contract offer'
     ],
-    connectionPath: 'Outside Network (Relay Verified National Partner)',
+    connectionPath: 'Outside Network (Referro Verified National Partner)',
     recommendedStrategy: 'Leverage multi-channel buyer syndication across East Coast venture partner network.',
     outperformance: {
       salesVolumeMultiplier: '4.8x Level 1 Volume',
@@ -382,7 +382,7 @@ export const OUTSIDE_NETWORK_CANDIDATES: AIMatchCandidate[] = [
       'Over 25 years specializing in architect-designed landmark residences with strict buyer qualification',
       '98.4% list-to-sale ratio with verified zero seller concessions history'
     ],
-    connectionPath: 'Outside Network (Relay Verified National Partner)',
+    connectionPath: 'Outside Network (Referro Verified National Partner)',
     recommendedStrategy: 'Private presentation to entertainment and media wealth management advisors.',
     outperformance: {
       salesVolumeMultiplier: '3.7x Level 1 Volume',
@@ -429,7 +429,7 @@ export const OUTSIDE_NETWORK_CANDIDATES: AIMatchCandidate[] = [
       'Berkshire Hathaway Chairman’s Circle Diamond recipient (Top 0.5% nationally)',
       'Expertise handling complex trust, LLC, and multi-generational family real estate transactions'
     ],
-    connectionPath: 'Outside Network (Relay Verified National Partner)',
+    connectionPath: 'Outside Network (Referro Verified National Partner)',
     recommendedStrategy: 'Structured corporate relocation referral under standard 25% protocol.',
     outperformance: {
       salesVolumeMultiplier: '3.3x Level 1 Volume',
@@ -476,7 +476,7 @@ export const OUTSIDE_NETWORK_CANDIDATES: AIMatchCandidate[] = [
       'Handled over $60M in confidential off-market Bay Area & Southern California transactions',
       'Dedicated bilingual transaction management and legal escrow team'
     ],
-    connectionPath: 'Outside Network (Relay Verified National Partner)',
+    connectionPath: 'Outside Network (Referro Verified National Partner)',
     recommendedStrategy: 'Confidential off-market buyer introduction with proof-of-funds verification.',
     outperformance: {
       salesVolumeMultiplier: '4.4x Level 1 Volume',
@@ -523,7 +523,7 @@ export const OUTSIDE_NETWORK_CANDIDATES: AIMatchCandidate[] = [
       'Historic preservation specialist with 18+ years navigating architectural architectural boards',
       '100% compliant closing history on high-value co-brokerage referrals'
     ],
-    connectionPath: 'Outside Network (Relay Verified National Partner)',
+    connectionPath: 'Outside Network (Referro Verified National Partner)',
     recommendedStrategy: 'East-West financial corridor syndicate introduction.',
     outperformance: {
       salesVolumeMultiplier: '3.9x Level 1 Volume',
@@ -570,7 +570,7 @@ export const OUTSIDE_NETWORK_CANDIDATES: AIMatchCandidate[] = [
       'Direct contact with 3 tech founders specifically seeking historic architectural estates with private gardens',
       'Recognized Top 10 Producer in Northern California Luxury Real Estate Council'
     ],
-    connectionPath: 'Outside Network (Relay Verified National Partner)',
+    connectionPath: 'Outside Network (Referro Verified National Partner)',
     recommendedStrategy: 'Immediate VIP private showing coordination for qualified pre-approved tech founders.',
     outperformance: {
       salesVolumeMultiplier: '4.2x Level 1 Volume',
@@ -617,7 +617,7 @@ export const OUTSIDE_NETWORK_CANDIDATES: AIMatchCandidate[] = [
       'Active network of high-net-worth families expanding portfolios across prime US cities',
       'Guaranteed seamless 25% referral closing protocol'
     ],
-    connectionPath: 'Outside Network (Relay Verified National Partner)',
+    connectionPath: 'Outside Network (Referro Verified National Partner)',
     recommendedStrategy: 'Outreach to Private Office global registry.',
     outperformance: {
       salesVolumeMultiplier: '3.6x Level 1 Volume',
@@ -664,7 +664,7 @@ export const OUTSIDE_NETWORK_CANDIDATES: AIMatchCandidate[] = [
       'Closed $45M in California-to-Arizona tax and luxury migrations over the past 18 months',
       'High confidentiality NDA protocol in place for all client showings'
     ],
-    connectionPath: 'Outside Network (Relay Verified National Partner)',
+    connectionPath: 'Outside Network (Referro Verified National Partner)',
     recommendedStrategy: 'Confidential VIP pitch through business manager representation channels.',
     outperformance: {
       salesVolumeMultiplier: '3.8x Level 1 Volume',
@@ -711,7 +711,7 @@ export const OUTSIDE_NETWORK_CANDIDATES: AIMatchCandidate[] = [
       'Substantial buyer pool of executives with dual residences across SF and Austin',
       'Fast 24-hour turnaround on referral inquiries'
     ],
-    connectionPath: 'Outside Network (Relay Verified National Partner)',
+    connectionPath: 'Outside Network (Referro Verified National Partner)',
     recommendedStrategy: 'Dual-market syndication for tech executive cross-relocation.',
     outperformance: {
       salesVolumeMultiplier: '3.4x Level 1 Volume',
@@ -758,7 +758,7 @@ export const OUTSIDE_NETWORK_CANDIDATES: AIMatchCandidate[] = [
       'Active buyer portfolio seeking trophy architectural properties in prime West Coast markets',
       'Flawless track record with complex escrow structures and corporate escrow accounts'
     ],
-    connectionPath: 'Outside Network (Relay Verified National Partner)',
+    connectionPath: 'Outside Network (Referro Verified National Partner)',
     recommendedStrategy: 'Direct outreach to private client wealth desk.',
     outperformance: {
       salesVolumeMultiplier: '4.5x Level 1 Volume',

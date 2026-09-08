@@ -74,7 +74,7 @@ export const EarningsView: React.FC = () => {
               <span>ENGINE 2: TRANSACTION SUCCESS FEES</span>
             </div>
             <p className="text-xs text-slate-600 leading-relaxed">
-              Tied strictly to closed transaction escrow values. The standard 25% referral commission split distributed between participating brokerages and Relay.
+              Tied strictly to closed transaction escrow values. The standard 25% referral commission split distributed between participating brokerages and Referro.
             </p>
             <div className="pt-2">
               <span className="text-emerald-700 font-bold text-xs">
@@ -145,7 +145,7 @@ export const EarningsView: React.FC = () => {
                 <th className="py-3 px-3">Close Date</th>
                 <th className="py-3 px-3 text-right">Deal Value</th>
                 <th className="py-3 px-3 text-right">Referral Fee (25%)</th>
-                <th className="py-3 px-3 text-right">Relay Share (10%)</th>
+                <th className="py-3 px-3 text-right">Referro Share (10%)</th>
                 <th className="py-3 px-3 text-right">Your Payout</th>
               </tr>
             </thead>

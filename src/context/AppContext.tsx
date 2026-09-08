@@ -446,7 +446,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       expectedCloseDate: '2026-11-15',
       lastUpdated: new Date().toISOString(),
       notes: [
-        `Referral initiated via Relay AI Matching (${candidate.overallScore}% Match)`,
+        `Referral initiated via Referro AI Matching (${candidate.overallScore}% Match)`,
         `Introduction delivered to ${candidate.contact.name} with ${opp.referralTermsPct}% fee terms.`
       ]
     };

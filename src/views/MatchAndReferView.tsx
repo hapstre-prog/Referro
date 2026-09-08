@@ -229,7 +229,7 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
     await createReferralFromMatch(
       opp,
       candidate,
-      `Hello ${candidate.contact.name}, I would like to introduce an opportunity regarding: "${query.slice(0, 60)}...". Standard 25% referral terms via Relay Escrow.`
+      `Hello ${candidate.contact.name}, I would like to introduce an opportunity regarding: "${query.slice(0, 60)}...". Standard 25% referral terms via Referro Escrow.`
     );
     setSelectedForIntro(null);
     setIntroSentMessage(`Referral agreement sent to ${candidate.contact.name} with standard 25% escrow protection.`);
@@ -323,7 +323,7 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
           Find Any Agent, Listing, or Referral Partner
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto mb-7 leading-relaxed">
-          Type your client, relocation, or listing in plain English. Relay AI searches outperforming agents outside your network with verified buyer demand.
+          Type your client, relocation, or listing in plain English. Referro AI searches outperforming agents outside your network with verified buyer demand.
         </p>
 
         {/* The Pure Google-Style Search Bar */}
@@ -610,7 +610,7 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
                     <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
                       <span className="flex items-center">
                         <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 mr-1" />
-                        Relay Escrow Protection
+                        Referro Escrow Protection
                       </span>
                       <button
                         onClick={() => handleUnlockCandidate(cand)}
@@ -723,7 +723,7 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
               Send Referral Agreement & Warm Intro
             </h3>
             <p className="text-xs text-slate-500 mb-4">
-              Connect with {selectedForIntro.contact.name} ({selectedForIntro.contact.company}) under standard 25% Relay escrow protection.
+              Connect with {selectedForIntro.contact.name} ({selectedForIntro.contact.company}) under standard 25% Referro escrow protection.
             </p>
 
             <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-4 mb-4 text-xs space-y-2.5">

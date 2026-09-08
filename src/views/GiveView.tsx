@@ -342,7 +342,7 @@ export const GiveView: React.FC = () => {
                   Initiate Referral to {selectedCandidate.contact.name}
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Relay establishes an enforceable legal agreement and delivers a warm introduction.
+                  Referro establishes an enforceable legal agreement and delivers a warm introduction.
                 </p>
               </div>
               <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">
