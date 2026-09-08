@@ -70,12 +70,14 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
   } = useApp();
 
   const [query, setQuery] = useState(
-    initialMode === 'give'
-      ? 'I have a tech buyer relocating from San Francisco to Miami looking for a waterfront condo up to $3M.'
-      : 'Need a top buyer agent for my $7.85M Pacific Heights historic luxury listing with liquid cash buyers.'
+    isDemoMode
+      ? (initialMode === 'give'
+        ? 'I have a tech buyer relocating from San Francisco to Miami looking for a waterfront condo up to $3M.'
+        : 'Need a top buyer agent for my $7.85M Pacific Heights historic luxury listing with liquid cash buyers.')
+      : ''
   );
 
-  const [hasSearched, setHasSearched] = useState(true);
+  const [hasSearched, setHasSearched] = useState(isDemoMode);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [searchScope, setSearchScope] = useState<'outside_network' | 'level_1_network'>('outside_network');
   const [displayFilter, setDisplayFilter] = useState<'all' | 'unlocked' | 'locked'>('all');
@@ -92,9 +94,11 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
 
   const resultsRef = useRef<HTMLDivElement>(null);
 
-  // Initial load
+  // Initial load — only auto-search in demo mode (mock data)
   useEffect(() => {
-    executeSearch();
+    if (isDemoMode) {
+      executeSearch();
+    }
   }, []);
 
   // Clear toast
@@ -114,17 +118,27 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
     const scope = scopeOverride || searchScope;
 
     if (scope === 'outside_network') {
-      const { candidates, initialUnlockedIds } = getMatchedOutsideNetworkResults(12);
-      setTimeout(() => {
-        setOutsideMatches(candidates);
-        setUnlockedIds(initialUnlockedIds);
-        setSearchScope('outside_network');
-        setIsAnalyzing(false);
-        setUnlockToast({
-          message: 'AI found 12 outperforming agents: 2 unlocked free, 10 masked.',
-          type: 'info'
-        });
-      }, 350);
+      if (!isDemoMode) {
+        // No mock outside-network data in production mode
+        setTimeout(() => {
+          setOutsideMatches([]);
+          setUnlockedIds([]);
+          setSearchScope('outside_network');
+          setIsAnalyzing(false);
+        }, 350);
+      } else {
+        const { candidates, initialUnlockedIds } = getMatchedOutsideNetworkResults(12);
+        setTimeout(() => {
+          setOutsideMatches(candidates);
+          setUnlockedIds(initialUnlockedIds);
+          setSearchScope('outside_network');
+          setIsAnalyzing(false);
+          setUnlockToast({
+            message: 'AI found 12 outperforming agents: 2 unlocked free, 10 masked.',
+            type: 'info'
+          });
+        }, 350);
+      }
     } else {
       setTimeout(() => {
         const l1Contacts = networkContacts.filter(c => c.degree === 1);
@@ -437,6 +451,22 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
               )}
             </div>
           </div>
+
+          {/* Empty state when no results (non-demo mode) */}
+          {((searchScope === 'outside_network' && outsideMatches.length === 0) ||
+            (searchScope === 'level_1_network' && level1Matches.length === 0)) && !isAnalyzing && (
+            <div className="bg-white rounded-2xl border border-slate-200/80 p-10 text-center shadow-2xs">
+              <Search className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+              <p className="text-sm font-semibold text-slate-700 mb-1">
+                {searchScope === 'outside_network' ? 'No outside-network agents found.' : 'No contacts in your network yet.'}
+              </p>
+              <p className="text-xs text-slate-400">
+                {searchScope === 'outside_network' 
+                  ? 'Connect your LinkedIn account to sync your real network, or try searching within your network.'
+                  : 'Connect LinkedIn or add contacts to start matching with referral partners.'}
+              </p>
+            </div>
+          )}
 
           {/* Matched Agents Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

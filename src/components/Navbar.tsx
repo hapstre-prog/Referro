@@ -100,10 +100,10 @@ export const Navbar: React.FC<{ onMobileMenuToggle?: () => void }> = ({ onMobile
               ? 'bg-amber-600 hover:bg-amber-700 text-white' 
               : 'bg-slate-900 hover:bg-slate-800 text-white'
           }`}
-          title={isDemoMode ? 'Exit Demo Mode' : 'Enter Interactive Demo Mode'}
+          title={isDemoMode ? 'Switch to Production Mode' : 'Switch to Demo Mode'}
         >
           <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-          <span>{isDemoMode ? 'DEMO ACTIVE' : 'TRY DEMO'}</span>
+          <span>{isDemoMode ? 'Switch to Production' : 'Switch to Demo'}</span>
         </button>
 
         {/* LinkedIn Connect Button — shown when not yet connected */}
