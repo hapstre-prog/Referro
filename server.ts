@@ -3,6 +3,7 @@ import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import dotenv from 'dotenv';
 import { structureRequestWithAI, draftIntroductionWithAI, chatReferralAssistantWithAI } from './server/gemini';
+import { searchForSaleListings, searchSoldListings, buildMarketSummary, getMarketDataForAI, formatMarketDataForAI } from './server/mls';
 import { 
   DEMO_USER, 
   INITIAL_ADMIN_CONFIG, 
@@ -323,6 +324,40 @@ async function startServer() {
     }
 
     res.json({ received: true });
+  });
+
+  // ----------------------------------------------------
+  // API: MLS Property Data (backend-only, enriches AI)
+  // ----------------------------------------------------
+  app.get('/api/mls/search', async (req, res) => {
+    const location = (req.query.location as string) || '';
+    const priceMin = req.query.price_min ? Number(req.query.price_min) : undefined;
+    const priceMax = req.query.price_max ? Number(req.query.price_max) : undefined;
+
+    if (!location) {
+      return res.status(400).json({ error: 'Location is required' });
+    }
+
+    const [forSale, sold] = await Promise.all([
+      searchForSaleListings(location, priceMin, priceMax),
+      searchSoldListings(location),
+    ]);
+
+    const summary = buildMarketSummary(location, forSale, sold);
+    res.json({ summary, forSale, sold });
+  });
+
+  app.get('/api/mls/market-data', async (req, res) => {
+    const location = (req.query.location as string) || '';
+    const priceMin = req.query.price_min ? Number(req.query.price_min) : undefined;
+    const priceMax = req.query.price_max ? Number(req.query.price_max) : undefined;
+
+    if (!location) {
+      return res.status(400).json({ error: 'Location is required' });
+    }
+
+    const formatted = await getMarketDataForAI(location, priceMin, priceMax);
+    res.json({ location, marketData: formatted, available: formatted.length > 0 });
   });
 
   // ----------------------------------------------------

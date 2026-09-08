@@ -1,4 +1,5 @@
 import { GoogleGenAI, Type } from '@google/genai';
+import { getMarketDataForAI } from './mls';
 
 // Lazy initialization of Gemini client
 let aiClient: GoogleGenAI | null = null;
@@ -80,13 +81,26 @@ export async function structureRequestWithAI(rawText: string, intentType?: 'give
     return fallbackStructureRequest(rawText, intentType);
   }
 
+  // Pull real MLS data for the target market to enrich AI structuring
+  let marketData = '';
   try {
-    const prompt = `You are the AI engine of Relay, a B2B real estate referral network platform.
+    const locMatch = rawText.match(/(?:in|at|for|to)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?,\s*[A-Z]{2})/);
+    const location = locMatch?.[1] || '';
+    if (location) {
+      marketData = await getMarketDataForAI(location);
+    }
+  } catch {
+    // Non-blocking
+  }
+
+  try {
+    const prompt = `You are the AI engine of Referro, a B2B real estate referral network platform.
 Analyze this user's natural language referral request and parse it into structured data:
 "${rawText}"
 
 Target request type: ${intentType || 'auto-detect'}
 
+${marketData ? `\n${marketData}\n\nUse this live MLS market data to inform your structured analysis with real market conditions.\n` : ''}
 Extract the real estate referral details accurately.`;
 
     const response = await callGeminiWithFallback(client, {
@@ -189,12 +203,27 @@ export async function chatReferralAssistantWithAI(prompt: string, context: strin
     return "I'm Referral AI, your intelligence partner. I can help you structure referral opportunities, analyze match scores, draft introductions, and optimize your 25% referral fee agreements. How can I assist with your deal pipeline today?";
   }
 
+  // Pull real MLS market data to ground AI recommendations in actual listings
+  let marketData = '';
+  try {
+    // Extract a location from the prompt or context for MLS lookup
+    const locMatch = prompt.match(/(?:in|at|for|to)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?,\s*[A-Z]{2})/) 
+      || context.match(/(?:market|location|area)[:\s]+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?,\s*[A-Z]{2})/);
+    const location = locMatch?.[1] || '';
+    if (location) {
+      marketData = await getMarketDataForAI(location);
+    }
+  } catch {
+    // Non-blocking — AI works fine without MLS data
+  }
+
   try {
     const response = await callGeminiWithFallback(client, {
-      contents: `You are Referral AI, an executive assistant built into Relay, the premier real estate referral network.
+      contents: `You are Referral AI, an executive assistant built into Referro, the premier real estate referral network.
 Help the agent with their referral strategy, match selection, fee negotiations, or deal tracking.
 Context of current user & pipeline: ${context}
 
+${marketData ? `\n${marketData}\n\nUse this live MLS market data to ground your recommendations with real listing evidence. Reference specific properties, prices, and market trends when explaining why an agent or property is a good match.\n` : ''}
 User question: "${prompt}"
 
 Provide concise, highly actionable, strategic advice (under 120 words).`,
