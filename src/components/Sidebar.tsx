@@ -1,16 +1,18 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { 
-  LayoutDashboard, 
-  Sparkles, 
-  Users, 
-  Kanban, 
-  DollarSign, 
-  Coins, 
-  MessageSquare, 
-  User, 
+import {
+  LayoutDashboard,
+  Sparkles,
+  Users,
+  Kanban,
+  DollarSign,
+  Coins,
+  MessageSquare,
+  User,
   ShieldAlert,
-  X
+  X,
+  ChevronDown,
+  Layers
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -19,7 +21,7 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose }) => {
-  const { activeTab, setActiveTab, deals, referrals, wallet, isDemoMode, notifications } = useApp();
+  const { activeTab, setActiveTab, deals, referrals, wallet, isDemoMode, notifications, user } = useApp();
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
@@ -27,31 +29,25 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
     {
       groupLabel: 'Core Engine',
       items: [
-        { 
-          id: 'dashboard', 
-          label: 'Dashboard', 
-          icon: LayoutDashboard,
-          activeFor: ['dashboard']
-        },
-        { 
-          id: 'match-refer', 
-          label: 'Match & Refer', 
-          icon: Sparkles, 
-          badge: 'AI Copilot',
+        { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, activeFor: ['dashboard'] },
+        {
+          id: 'match-refer',
+          label: 'Match & Refer',
+          icon: Sparkles,
+          badge: 'AI',
           activeFor: ['match-refer', 'give', 'take', 'ai-matches']
         },
-        { 
-          id: 'deals', 
-          label: 'Pipeline & Deals', 
-          icon: Kanban, 
+        {
+          id: 'deals',
+          label: 'Pipeline & Deals',
+          icon: Kanban,
           count: deals.length + referrals.length,
           activeFor: ['deals', 'referrals', 'opportunities']
         },
-        { 
-          id: 'my-network', 
-          label: 'My Network', 
-          icon: Users, 
-          badge: '50+ Verified',
+        {
+          id: 'my-network',
+          label: 'My Network',
+          icon: Users,
           activeFor: ['my-network']
         }
       ]
@@ -59,44 +55,33 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
     {
       groupLabel: 'Activity & Wallet',
       items: [
-        { 
-          id: 'credits', 
-          label: 'Credits Wallet', 
-          icon: Coins, 
-          highlight: true,
-          badge: isDemoMode ? 'Unlimited' : `${wallet.availableCredits}`,
-          activeFor: ['credits']
-        },
-        { 
-          id: 'earnings', 
-          label: 'Earnings & Escrow', 
-          icon: DollarSign,
-          activeFor: ['earnings']
-        },
-        { 
-          id: 'messages', 
-          label: 'Messages', 
+        {
+          id: 'messages',
+          label: 'Messages',
           icon: MessageSquare,
           count: unreadCount > 0 ? unreadCount : undefined,
           activeFor: ['messages']
+        },
+        {
+          id: 'credits',
+          label: 'Credits Wallet',
+          icon: Coins,
+          badge: isDemoMode ? '∞' : `${wallet.availableCredits}`,
+          activeFor: ['credits']
+        },
+        {
+          id: 'earnings',
+          label: 'Earnings & Escrow',
+          icon: DollarSign,
+          activeFor: ['earnings']
         }
       ]
     },
     {
       groupLabel: 'Settings',
       items: [
-        { 
-          id: 'profile', 
-          label: 'Profile & License', 
-          icon: User,
-          activeFor: ['profile']
-        },
-        { 
-          id: 'admin', 
-          label: 'Admin Economics', 
-          icon: ShieldAlert,
-          activeFor: ['admin']
-        }
+        { id: 'profile', label: 'Profile & License', icon: User, activeFor: ['profile'] },
+        { id: 'admin', label: 'Admin Economics', icon: ShieldAlert, activeFor: ['admin'] }
       ]
     }
   ];
@@ -107,42 +92,36 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
   };
 
   const sidebarContent = (
-    <div className="flex flex-col h-full bg-slate-900 text-slate-300 w-64 border-r border-slate-800 select-none">
-      {/* Sidebar header */}
-      <div className="p-4 border-b border-slate-800 flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-            {isDemoMode ? 'Demo Sandbox' : 'Production Engine'}
-          </span>
+    <div className="flex flex-col h-full bg-[#F9F9F9] text-[#555] w-64 select-none border-r border-slate-200/60">
+      {/* Logo / Header */}
+      <div className="px-4 py-4 flex items-center justify-between">
+        <div className="flex items-center space-x-2.5">
+          <div className="w-9 h-9 rounded-xl bg-slate-900 flex items-center justify-center">
+            <Layers className="w-5 h-5 text-indigo-400" />
+          </div>
+          <div className="leading-tight">
+            <div className="font-bold text-slate-900 text-sm">Relay</div>
+            <div className="text-[10px] text-slate-400 font-medium">relay.network</div>
+          </div>
         </div>
-        {onMobileClose && (
-          <button 
-            onClick={onMobileClose} 
-            className="md:hidden p-1 text-slate-400 hover:text-white rounded-lg"
+        {onMobileClose ? (
+          <button
+            onClick={onMobileClose}
+            className="md:hidden p-1 text-slate-400 hover:text-slate-700 rounded-lg"
             aria-label="Close menu"
           >
             <X className="w-5 h-5" />
           </button>
+        ) : (
+          <ChevronDown className="w-4 h-4 text-slate-400" />
         )}
       </div>
 
-      {/* Core Loop Reminder Widget */}
-      <div className="mx-3 my-3 p-3 rounded-xl bg-slate-800/80 border border-slate-700/60 text-[11px] leading-relaxed">
-        <div className="flex items-center justify-between font-semibold text-slate-200 mb-1">
-          <span>The Core Loop</span>
-          <span className="text-indigo-400 font-bold text-[10px]">25% - 30% Fee</span>
-        </div>
-        <div className="text-slate-400">
-          Describe lead → AI Follow-up → Match → Intro → Deal closes → Payout.
-        </div>
-      </div>
-
-      {/* Grouped Nav links */}
-      <nav className="flex-1 px-3 space-y-4 overflow-y-auto py-1">
+      {/* Nav links */}
+      <nav className="flex-1 px-3 space-y-5 overflow-y-auto py-2">
         {navGroups.map((group, gIdx) => (
-          <div key={gIdx} className="space-y-1">
-            <div className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
+          <div key={gIdx} className="space-y-0.5">
+            <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-[#777]">
               {group.groupLabel}
             </div>
             {group.items.map((item) => {
@@ -152,34 +131,26 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
                 <button
                   key={item.id}
                   onClick={() => handleSelect(item.id)}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[13px] font-medium transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-indigo-600 text-white shadow-xs'
-                      : item.highlight
-                      ? 'text-amber-300 hover:bg-slate-800 hover:text-amber-200'
-                      : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                      ? 'bg-[#EAEAEA] text-slate-900 font-semibold'
+                      : 'text-[#555] hover:bg-slate-200/50'
                   }`}
                 >
                   <div className="flex items-center space-x-2.5">
-                    <Icon className={`w-4 h-4 ${isActive ? 'text-white' : item.highlight ? 'text-amber-400' : 'text-slate-400'}`} />
+                    <Icon className={`w-[18px] h-[18px] ${isActive ? 'text-slate-900' : 'text-slate-400'}`} />
                     <span>{item.label}</span>
                   </div>
 
                   {item.count !== undefined && (
-                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                      isActive ? 'bg-indigo-700 text-white' : 'bg-slate-800 text-slate-300 border border-slate-700'
-                    }`}>
+                    <span className="px-1.5 min-w-[20px] text-center py-0.5 rounded-full text-[10px] font-bold bg-rose-500 text-white">
                       {item.count}
                     </span>
                   )}
 
-                  {item.badge && (
-                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-medium tracking-wide uppercase ${
-                      isActive 
-                        ? 'bg-indigo-700 text-indigo-100' 
-                        : item.highlight 
-                        ? 'bg-amber-950 text-amber-300 border border-amber-800' 
-                        : 'bg-slate-800 text-slate-400'
+                  {item.badge && !item.count && (
+                    <span className={`px-1.5 py-0.5 rounded text-[9px] font-semibold ${
+                      isActive ? 'bg-slate-300 text-slate-700' : 'bg-slate-200 text-slate-500'
                     }`}>
                       {item.badge}
                     </span>
@@ -191,29 +162,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
         ))}
       </nav>
 
-      {/* Mini Wallet status footer */}
-      <div className="p-3 border-t border-slate-800 bg-slate-950/50">
-        <div 
-          onClick={() => handleSelect('credits')}
-          className="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-800 border border-slate-700/80 cursor-pointer transition-colors"
+      {/* User profile footer */}
+      <div className="px-3 py-3 border-t border-slate-200/60">
+        <button
+          onClick={() => handleSelect('profile')}
+          className="w-full flex items-center space-x-2.5 px-2 py-2 rounded-lg hover:bg-slate-200/50 transition-colors"
         >
-          <div className="flex items-center justify-between text-xs mb-1">
-            <span className="text-slate-400 font-medium">Credits Wallet</span>
-            <span className="font-bold text-amber-400">
-              {isDemoMode ? 'Unlimited' : `${wallet.availableCredits} Available`}
-            </span>
+          <img
+            src={user.avatarUrl}
+            alt={user.name}
+            className="w-8 h-8 rounded-full object-cover ring-1 ring-slate-200"
+          />
+          <div className="flex-1 text-left leading-tight min-w-0">
+            <div className="text-xs font-semibold text-slate-900 truncate">{user.name}</div>
+            <div className="text-[10px] text-slate-400 truncate">{user.email}</div>
           </div>
-          <div className="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
-            <div 
-              className="bg-amber-500 h-full rounded-full transition-all duration-300"
-              style={{ width: isDemoMode ? '100%' : `${Math.min(100, (wallet.availableCredits / 10) * 100)}%` }}
-            />
-          </div>
-          <div className="flex items-center justify-between text-[10px] text-slate-500 mt-1.5">
-            <span>Click to refill or buy</span>
-            <span className="text-indigo-400 font-semibold">+ Buy</span>
-          </div>
-        </div>
+          <ChevronDown className="w-4 h-4 text-slate-400 shrink-0" />
+        </button>
       </div>
     </div>
   );
@@ -228,11 +193,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
       {/* Mobile Drawer */}
       {isMobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden flex">
-          <div 
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs transition-opacity" 
-            onClick={onMobileClose} 
+          <div
+            className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs transition-opacity"
+            onClick={onMobileClose}
           />
-          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-slate-900 shadow-2xl z-10 animate-in slide-in-from-left duration-200">
+          <div className="relative flex-1 flex flex-col max-w-xs w-full bg-[#F9F9F9] shadow-2xl z-10 animate-in slide-in-from-left duration-200">
             {sidebarContent}
           </div>
         </div>
