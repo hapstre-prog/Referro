@@ -27,7 +27,10 @@ import {
   X, 
   CreditCard,
   Send,
-  SlidersHorizontal
+  SlidersHorizontal,
+  Home,
+  MapPin,
+  UserPlus
 } from 'lucide-react';
 
 interface MatchAndReferViewProps {
@@ -386,6 +389,67 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
           </div>
         </div>
       </div>
+
+      {/* HOW IT WORKS — shown before search results */}
+      {!hasSearched && (
+        <div className="space-y-3">
+          <h2 className="text-xs font-bold uppercase tracking-wider px-1" style={{ color: '#6B7280' }}>
+            How It Works — Click To See Your Journey
+          </h2>
+
+          {/* Card 1 — Stale Listing (highlighted) */}
+          <button
+            onClick={() => {
+              setQuery('Need a top buyer agent for my $7.85M Pacific Heights historic luxury listing with liquid cash buyers.');
+              executeSearch(undefined, 'Need a top buyer agent for my $7.85M Pacific Heights historic luxury listing with liquid cash buyers.');
+            }}
+            className="w-full flex items-center gap-4 bg-white rounded-2xl p-5 shadow-sm text-left transition-all hover:shadow-md"
+            style={{ border: '2px solid #5D5FEF' }}
+          >
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: '#5D5FEF' }}>
+              <Home className="w-6 h-6 text-white" />
+            </div>
+            <div className="text-left">
+              <h3 className="font-bold text-sm mb-0.5" style={{ color: '#111827' }}>Stale Listing? Find Buyers</h3>
+              <p className="text-xs leading-relaxed" style={{ color: '#4B5563' }}>Your listing has been sitting too long. We connect you with buyer agents who have ready buyers.</p>
+            </div>
+          </button>
+
+          {/* Card 2 — Out-of-State Referrals */}
+          <button
+            onClick={() => {
+              setQuery('Referring a verified tech executive buyer relocating from SF to Miami ($2M - $3.5M cash budget). Looking for Brickell luxury specialist.');
+              executeSearch(undefined, 'Referring a verified tech executive buyer relocating from SF to Miami ($2M - $3.5M cash budget). Looking for Brickell luxury specialist.');
+            }}
+            className="w-full flex items-center gap-4 bg-white rounded-2xl p-5 shadow-sm text-left transition-all hover:shadow-md border border-slate-200"
+          >
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-indigo-50">
+              <MapPin className="w-6 h-6" style={{ color: '#5D5FEF' }} />
+            </div>
+            <div className="text-left">
+              <h3 className="font-bold text-sm mb-0.5" style={{ color: '#111827' }}>Out-of-State Referrals</h3>
+              <p className="text-xs leading-relaxed" style={{ color: '#4B5563' }}>Your client needs an agent in another state. We match them with a licensed local pro — you keep the referral fee.</p>
+            </div>
+          </button>
+
+          {/* Card 3 — Anyone Can Earn */}
+          <button
+            onClick={() => {
+              setQuery('I know a homeowner looking to sell their property — connect me with a listing agent.');
+              executeSearch(undefined, 'I know a homeowner looking to sell their property — connect me with a listing agent.');
+            }}
+            className="w-full flex items-center gap-4 bg-white rounded-2xl p-5 shadow-sm text-left transition-all hover:shadow-md border border-slate-200"
+          >
+            <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-indigo-50">
+              <UserPlus className="w-6 h-6" style={{ color: '#5D5FEF' }} />
+            </div>
+            <div className="text-left">
+              <h3 className="font-bold text-sm mb-0.5" style={{ color: '#111827' }}>Anyone Can Earn</h3>
+              <p className="text-xs leading-relaxed" style={{ color: '#4B5563' }}>Contractors, designers, or anyone who knows someone looking to buy or sell — share the tip and earn a referral fee when the deal closes.</p>
+            </div>
+          </button>
+        </div>
+      )}
 
       {/* RESULTS SECTION (Rendered directly below once searched) */}
       {hasSearched && (
