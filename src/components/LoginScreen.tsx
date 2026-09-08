@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { Sparkles, Send, ArrowRight, Bot, ChevronDown, Loader2, Home, MapPin, Hammer, Users } from 'lucide-react';
+import { Sparkles, Send, ArrowRight, Bot, ChevronDown, Loader2, Home, MapPin, Users } from 'lucide-react';
 import { TimelineBar, TimelineData } from './TimelineBar';
 
 const SUGGESTED_PROMPTS = [
@@ -22,14 +22,9 @@ const SCENARIOS = [
     desc: "Your client needs an agent in another state. We match them with a licensed local pro — you keep the referral fee.",
   },
   {
-    icon: Hammer,
-    title: 'Tip Providers Get Paid',
-    desc: "Contractors, designers, or anyone who knows a home is about to sell — share the tip and earn a cut when it closes.",
-  },
-  {
     icon: Users,
-    title: 'Matchmakers Earn Too',
-    desc: "Know someone looking for a home? Introduce them to the right agent through us and collect a referral fee at closing.",
+    title: 'Anyone Can Earn',
+    desc: "Contractors, designers, or anyone who knows someone looking to buy or sell — share the tip and earn a referral fee when the deal closes.",
   },
 ];
 
@@ -58,23 +53,11 @@ const TIMELINES: TimelineData[] = [
   },
   {
     steps: [
-      { label: 'Tip', desc: 'Share the home that is about to sell' },
-      { label: 'Match', desc: 'We find the right listing agent' },
-      { label: 'Accept', desc: 'Agent accepts the lead' },
-      { label: 'Sign', desc: 'Agree your share of the fee' },
-      { label: 'List', desc: 'Agent lists the property on the MLS' },
-      { label: 'Offer', desc: 'A buyer makes an offer' },
-      { label: 'Close', desc: 'Deal closes' },
-      { label: 'Get Paid', desc: 'Receive your cut of the fee' },
-    ],
-  },
-  {
-    steps: [
-      { label: 'Share', desc: 'Tell us about the buyer you know' },
-      { label: 'Match', desc: 'We find the right buyer agent' },
+      { label: 'Share', desc: 'Tell us about the home or buyer you know' },
+      { label: 'Match', desc: 'We find the right agent for the deal' },
       { label: 'Accept', desc: 'Agent accepts the referral' },
       { label: 'Sign', desc: 'Agree the referral fee terms' },
-      { label: 'Work', desc: 'Agent works with the buyer' },
+      { label: 'Work', desc: 'Agent works with the seller or buyer' },
       { label: 'Close', desc: 'Deal closes' },
       { label: 'Get Paid', desc: 'Receive your referral fee payout' },
     ],
