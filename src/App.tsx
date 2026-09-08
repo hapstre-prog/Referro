@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { DemoBanner } from './components/DemoBanner';
 import { LowCreditBanner } from './components/LowCreditBanner';
@@ -29,15 +29,8 @@ import { AdminCreditsView } from './views/AdminCreditsView';
 import { MatchAndReferView } from './views/MatchAndReferView';
 
 const AppContent: React.FC = () => {
-  const { activeTab, isAuthenticated, isDemoMode, setDemoMode } = useApp();
+  const { activeTab } = useApp();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // Auto-enter demo mode to skip landing page and go straight to the app
-  useEffect(() => {
-    if (!isAuthenticated && !isDemoMode) {
-      setDemoMode(true);
-    }
-  }, [isAuthenticated, isDemoMode, setDemoMode]);
 
   const renderActiveView = () => {
     switch (activeTab) {
