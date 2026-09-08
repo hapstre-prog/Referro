@@ -11,8 +11,7 @@ import {
   User,
   ShieldAlert,
   X,
-  ChevronDown,
-  Layers
+  ChevronDown
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -93,17 +92,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
 
   const sidebarContent = (
     <div className="flex flex-col h-full bg-[#F9F9F9] text-[#555] w-64 select-none border-r border-slate-200/60">
-      {/* Logo / Header */}
-      <div className="px-4 py-4 flex items-center justify-between">
-        <div className="flex items-center space-x-2.5">
-          <div className="w-9 h-9 rounded-xl bg-slate-900 flex items-center justify-center">
-            <Layers className="w-5 h-5 text-indigo-400" />
-          </div>
-          <div className="leading-tight">
-            <div className="font-bold text-slate-900 text-sm">Referro</div>
-            <div className="text-[10px] text-slate-400 font-medium">referro.network</div>
-          </div>
-        </div>
+      {/* Header */}
+      <div className="px-4 py-4 flex items-center justify-end">
         {onMobileClose ? (
           <button
             onClick={onMobileClose}
