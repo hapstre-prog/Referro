@@ -1,15 +1,62 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { LoginScreen } from './LoginScreen';
-import { DashboardView } from '../views/DashboardView';
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 import { useApp } from '../context/AppContext';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
 
+// Views
+import { DashboardView } from '../views/DashboardView';
+import { MyNetworkView } from '../views/MyNetworkView';
+import { OpportunitiesView } from '../views/OpportunitiesView';
+import { ReferralsView } from '../views/ReferralsView';
+import { DealsView } from '../views/DealsView';
+import { EarningsView } from '../views/EarningsView';
+import { CreditsView } from '../views/CreditsView';
+import { MessagesView } from '../views/MessagesView';
+import { ProfileView } from '../views/ProfileView';
+import { AdminCreditsView } from '../views/AdminCreditsView';
+import { MatchAndReferView } from '../views/MatchAndReferView';
+
 export const LandingSlider: React.FC = () => {
-  const { setActiveTab } = useApp();
+  const { activeTab } = useApp();
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeSlide, setActiveSlide] = useState(0);
+
+  const renderActiveView = () => {
+    switch (activeTab) {
+      case 'dashboard':
+        return <DashboardView />;
+      case 'match-refer':
+        return <MatchAndReferView initialMode="auto" />;
+      case 'give':
+        return <MatchAndReferView initialMode="give" />;
+      case 'take':
+        return <MatchAndReferView initialMode="take" />;
+      case 'ai-matches':
+        return <MatchAndReferView initialMode="auto" />;
+      case 'my-network':
+        return <MyNetworkView />;
+      case 'opportunities':
+        return <OpportunitiesView />;
+      case 'referrals':
+        return <ReferralsView />;
+      case 'deals':
+        return <DealsView />;
+      case 'earnings':
+        return <EarningsView />;
+      case 'credits':
+        return <CreditsView />;
+      case 'messages':
+        return <MessagesView />;
+      case 'profile':
+        return <ProfileView />;
+      case 'admin':
+        return <AdminCreditsView />;
+      default:
+        return <DashboardView />;
+    }
+  };
 
   const slides = [
     { id: 'landing', label: 'How it works' },
@@ -56,7 +103,7 @@ export const LandingSlider: React.FC = () => {
             <div className="flex-1 flex overflow-hidden">
               <Sidebar />
               <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-                <DashboardView />
+                {renderActiveView()}
               </main>
             </div>
           </div>
