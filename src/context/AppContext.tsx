@@ -30,6 +30,29 @@ import {
   SEED_NOTIFICATIONS
 } from '../data/seedData';
 
+// Blank user profile for non-demo (real) users — no mock data
+const BLANK_USER: UserProfile = {
+  id: '',
+  name: '',
+  email: '',
+  avatarUrl: '',
+  role: 'agent',
+  title: '',
+  company: '',
+  jurisdiction: [],
+  marketsServed: [],
+  specialties: [],
+  priceRange: { min: 0, max: 0 },
+  reputationScore: 0,
+  responseRate: 0,
+  successRate: 0,
+  dealsClosed: 0,
+  totalVolume: 0,
+  isVerified: false,
+  complianceStatus: 'pending',
+  joinedAt: ''
+};
+
 interface AppContextType {
   user: UserProfile;
   isDemoMode: boolean;
@@ -99,28 +122,38 @@ interface AppContextType {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<UserProfile>(DEMO_USER);
+  const [user, setUser] = useState<UserProfile>(BLANK_USER);
   const [isDemoMode, setIsDemoModeState] = useState<boolean>(false); // Start at login screen; user can enter demo from there
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   
-  // Data lists
-  const [opportunities, setOpportunities] = useState<Opportunity[]>(SEED_OPPORTUNITIES);
-  const [networkContacts, setNetworkContacts] = useState<NetworkContact[]>(SEED_NETWORK_CONTACTS);
-  const [referrals, setReferrals] = useState<ReferralContract[]>(SEED_REFERRALS);
-  const [deals, setDeals] = useState<Deal[]>(SEED_DEALS);
-  const [messages, setMessages] = useState<Message[]>(SEED_MESSAGES);
-  const [notifications, setNotifications] = useState<NotificationItem[]>(SEED_NOTIFICATIONS);
+  // Data lists — empty by default; seed data only loads when demo mode is turned ON
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [networkContacts, setNetworkContacts] = useState<NetworkContact[]>([]);
+  const [referrals, setReferrals] = useState<ReferralContract[]>([]);
+  const [deals, setDeals] = useState<Deal[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
 
   // Credit System State
   const [wallet, setWallet] = useState<CreditWallet>({
     ...INITIAL_CREDIT_WALLET,
-    isDemoUnlimited: true // Unlimited in Demo Mode as required by Section #17
+    isDemoUnlimited: false // Only unlimited when demo mode is ON
   });
-  const [transactions, setTransactions] = useState<CreditTransaction[]>(INITIAL_TRANSACTIONS);
+  const [transactions, setTransactions] = useState<CreditTransaction[]>([]);
   const [creditPackages, setCreditPackages] = useState<CreditPackage[]>(INITIAL_CREDIT_PACKAGES);
   const [adminConfig, setAdminConfig] = useState<AdminCreditConfig>(INITIAL_ADMIN_CONFIG);
-  const [analytics, setAnalytics] = useState<FunnelAnalytics>(SEED_FUNNEL_ANALYTICS);
+  const [analytics, setAnalytics] = useState<FunnelAnalytics>({
+    signups: 0, totalUsersSignedUp: 0, freeCreditsGranted: 0,
+    firstNetworkSearches: 0, firstBeyondSearches: 0,
+    freeCreditsConsumed: 0, creditsExhausted: 0,
+    creditPurchases: 0, repeatPurchases: 0,
+    freeToPaidRate: 0, creditUtilizationRate: 0,
+    searchToMatchRate: 0, matchToIntroRate: 0,
+    introToDealRate: 0, dealToCloseRate: 0,
+    totalCreditsPurchased: 0, creditRevenueDollars: 0,
+    totalDealVolumeGMV: 0, totalPlatformSuccessFees: 0
+  });
 
   // Modals
   const [isFirstTimeWelcomeOpen, setIsFirstTimeWelcomeOpen] = useState<boolean>(false);
@@ -192,7 +225,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         totalCreditsPurchased: 0, creditRevenueDollars: 0,
         totalDealVolumeGMV: 0, totalPlatformSuccessFees: 0
       });
-      // In production mode, prompt welcome if first time
+      // In production mode, reset to blank user and prompt welcome if first time
+      setUser(BLANK_USER);
       setIsFirstTimeWelcomeOpen(true);
     }
   };
@@ -635,10 +669,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Logout
   const logout = () => {
     setIsAuthenticated(false);
-    setIsDemoModeState(true);
-    setUser(DEMO_USER);
+    setIsDemoModeState(false);
+    setUser(BLANK_USER);
     setActiveTab('dashboard');
-    setWallet({ ...INITIAL_CREDIT_WALLET, isDemoUnlimited: true });
+    // Clear all data on logout
+    setOpportunities([]);
+    setNetworkContacts([]);
+    setReferrals([]);
+    setDeals([]);
+    setMessages([]);
+    setNotifications([]);
+    setTransactions([]);
+    setWallet({ ...INITIAL_CREDIT_WALLET, isDemoUnlimited: false });
   };
 
   // LinkedIn OAuth: redirect user to LinkedIn authorization page

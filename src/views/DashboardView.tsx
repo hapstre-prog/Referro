@@ -47,12 +47,14 @@ export const DashboardView: React.FC = () => {
         <div className="relative z-10">
           <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
             <div>
+              {isDemoMode && user.brokerage && (
               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-semibold mb-2 border border-indigo-400/30">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                <span>{user.brokerage || 'Keller Williams Luxury'} · California DRE Verified</span>
+                <span>{user.brokerage} · California DRE Verified</span>
               </div>
+              )}
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-                Welcome back, {user.name.split(' ')[0]}
+                {user.name ? `Welcome back, ${user.name.split(' ')[0]}` : 'Welcome to Referro'}
               </h2>
               <p className="text-slate-300 text-xs sm:text-sm mt-1 max-w-2xl leading-relaxed">
                 Turn the out-of-area buyers and listings you can't service into high-converting 25% referral fees. Sourced by AI across your verified network.

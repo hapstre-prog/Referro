@@ -189,17 +189,25 @@ export const Navbar: React.FC<{ onMobileMenuToggle?: () => void }> = ({ onMobile
           onClick={() => setActiveTab('profile')}
           className="flex items-center space-x-2 pl-1 sm:pl-2 border-l border-slate-200 cursor-pointer"
         >
-          <img
-            src={user.avatarUrl}
-            alt={user.name}
-            className="w-8 h-8 rounded-xl object-cover ring-1 ring-slate-200"
-          />
-          <div className="hidden lg:block text-left">
-            <span className="text-xs font-semibold text-slate-900 block leading-tight">{user.name}</span>
-            <span className="text-[10px] text-slate-400 font-medium block">
-              {user.brokerage?.split(' ')[0] || 'KW'} · {user.jurisdiction[0]}
-            </span>
-          </div>
+          {user.avatarUrl ? (
+            <img
+              src={user.avatarUrl}
+              alt={user.name}
+              className="w-8 h-8 rounded-xl object-cover ring-1 ring-slate-200"
+            />
+          ) : (
+            <div className="w-8 h-8 rounded-xl bg-slate-200 ring-1 ring-slate-200 flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-slate-400" />
+            </div>
+          )}
+          {user.name && (
+            <div className="hidden lg:block text-left">
+              <span className="text-xs font-semibold text-slate-900 block leading-tight">{user.name}</span>
+              <span className="text-[10px] text-slate-400 font-medium block">
+                {user.brokerage?.split(' ')[0] || ''} {user.jurisdiction[0] ? `· ${user.jurisdiction[0]}` : ''}
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Logout — shown when authenticated (not demo) */}
