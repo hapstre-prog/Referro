@@ -1,12 +1,35 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
-import { Sparkles, Send, ArrowRight, Bot, Gift, Network, Zap, Loader2, ChevronDown } from 'lucide-react';
+import { Sparkles, Send, ArrowRight, Bot, ChevronDown, Loader2, Home, MapPin, Hammer, Users } from 'lucide-react';
 
 const SUGGESTED_PROMPTS = [
-  'How do I find the right agent for a luxury Miami relocation?',
-  'What is a fair referral fee split?',
-  'How does Referro match me with agents?',
-  'Can I search my network for free?',
+  'My listing has been sitting — how do I find buyer agents?',
+  "I'm licensed in CA but my client needs an agent in NY",
+  "I'm a contractor who knows a home is about to sell",
+  "I know someone looking for a home — how do I get paid?",
+];
+
+const SCENARIOS = [
+  {
+    icon: Home,
+    title: 'Stale Listing? Find Buyers',
+    desc: 'Your listing has been sitting too long. We connect you with buyer agents who have ready buyers.',
+  },
+  {
+    icon: MapPin,
+    title: 'Out-of-State Referrals',
+    desc: "Your client needs an agent in another state. We match them with a licensed local pro — you keep the referral fee.",
+  },
+  {
+    icon: Hammer,
+    title: 'Tip Providers Get Paid',
+    desc: "Contractors, designers, or anyone who knows a home is about to sell — share the tip and earn a cut when it closes.",
+  },
+  {
+    icon: Users,
+    title: 'Matchmakers Earn Too',
+    desc: "Know someone looking for a home? Introduce them to the right agent through us and collect a referral fee at closing.",
+  },
 ];
 
 export const LoginScreen: React.FC = () => {
@@ -90,75 +113,72 @@ export const LoginScreen: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/40 to-blue-50/30 flex items-center justify-center p-4 sm:p-8 font-sans antialiased">
-      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-
-        {/* Left: Hero + Free Network CTA */}
-        <div className="order-2 lg:order-1">
-          <div className="flex items-center space-x-3 mb-6">
-            <div className="w-12 h-12 bg-indigo-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-200">
-              <Sparkles className="w-6 h-6" />
-            </div>
-            <div>
-              <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">Referro</h1>
-              <p className="text-xs text-slate-500">Your network is your first source of opportunities.</p>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/40 to-blue-50/30 font-sans antialiased">
+      {/* Top bar */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 pt-6 flex items-center justify-between">
+        <div className="flex items-center space-x-2.5">
+          <div className="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
+            <Sparkles className="w-5 h-5" />
           </div>
+          <span className="text-lg font-extrabold text-slate-900 tracking-tight">Referro</span>
+        </div>
+        <button
+          onClick={() => { setShowAuth(true); setAuthMode('login'); }}
+          className="text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
+        >
+          Sign in
+        </button>
+      </div>
 
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight mb-4">
-            Turn your professional network into{' '}
-            <span className="text-indigo-600">real referral revenue</span>.
-          </h2>
-          <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-6">
-            Referro connects you with verified real estate professionals across luxury US markets. Search your network, send referrals, and track deals — all in one place.
-          </p>
-
-          {/* Free Network Banner */}
-          <div className="flex items-start gap-3 p-4 rounded-2xl bg-emerald-50 border border-emerald-100 mb-6">
-            <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0">
-              <Gift className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-sm font-bold text-emerald-900">Searching your network is always free</p>
-              <p className="text-xs text-emerald-700 mt-0.5">
-                Browse and search your entire network of professionals without consuming any credits — no limits, no cost.
-              </p>
-            </div>
-          </div>
-
-          {/* Feature highlights */}
-          <div className="space-y-3 mb-8">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
-                <Network className="w-4 h-4" />
-              </div>
-              <p className="text-sm text-slate-700 font-medium">Sync your LinkedIn connections and discover referral partners instantly</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
-                <Zap className="w-4 h-4" />
-              </div>
-              <p className="text-sm text-slate-700 font-medium">AI-powered matching finds the right agent for every opportunity</p>
-            </div>
-          </div>
-
-          {/* Primary CTA: Start exploring network — always free */}
+      {/* Hero */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 pt-10 pb-6 text-center">
+        <h1 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight max-w-3xl mx-auto">
+          Every real estate connection becomes a{' '}
+          <span className="text-indigo-600">paid opportunity</span>.
+        </h1>
+        <p className="text-slate-600 text-base sm:text-lg leading-relaxed mt-4 max-w-2xl mx-auto">
+          Referro connects agents, contractors, and everyday people — anyone who knows about a deal — with the right professional to close it. You get paid when the deal closes.
+        </p>
+        <div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
           <button
             onClick={() => setDemoMode(true)}
-            className="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-lg shadow-slate-200 transition-all flex items-center justify-center space-x-2"
+            className="px-8 py-3.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm shadow-lg shadow-slate-200 transition-all flex items-center justify-center space-x-2"
           >
-            <span>Start to find the right people within your network</span>
+            <span>Find the right people</span>
             <ArrowRight className="w-4 h-4" />
           </button>
-          <p className="text-xs text-emerald-600 font-semibold mt-2 flex items-center gap-1">
-            <Gift className="w-3 h-3" />
-            Always free — does not consume any credits
-          </p>
+          <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+            <Sparkles className="w-3 h-3" />
+            Free to explore — no signup needed
+          </span>
+        </div>
+      </div>
+
+      {/* Main grid: scenarios + AI chat */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 pb-12 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
+
+        {/* Left: 4 scenarios */}
+        <div className="space-y-3">
+          <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wide mb-1">How it works</h2>
+          {SCENARIOS.map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <div key={i} className="flex items-start gap-4 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
+                <div className="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                  <Icon className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900">{s.title}</h3>
+                  <p className="text-xs text-slate-600 leading-relaxed mt-1">{s.desc}</p>
+                </div>
+              </div>
+            );
+          })}
         </div>
 
-        {/* Right: AI Question Interface */}
-        <div className="order-1 lg:order-2">
-          <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden flex flex-col" style={{ maxHeight: '600px' }}>
+        {/* Right: AI chat */}
+        <div>
+          <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden flex flex-col" style={{ maxHeight: '560px' }}>
             {/* Header */}
             <div className="bg-slate-900 text-white p-4 flex items-center justify-between">
               <div className="flex items-center space-x-2.5">
@@ -180,7 +200,7 @@ export const LoginScreen: React.FC = () => {
             </div>
 
             {/* Messages */}
-            <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50/60 text-sm min-h-[280px]">
+            <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-slate-50/60 text-sm min-h-[260px]">
               {messages.map((m, idx) => (
                 <div key={idx} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
                   <div className={`p-3 rounded-2xl max-w-[85%] leading-relaxed text-xs ${
@@ -226,7 +246,7 @@ export const LoginScreen: React.FC = () => {
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleSend()}
                 placeholder="Ask a question..."
-                className="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-colors disabled:opacity-50"
+                className="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-colors"
               />
               <button
                 onClick={() => handleSend()}
@@ -238,7 +258,7 @@ export const LoginScreen: React.FC = () => {
             </div>
           </div>
 
-          {/* Sign in / Create account — collapsed below */}
+          {/* Sign in / Create account */}
           <div className="mt-4 text-center">
             {!showAuth ? (
               <button
@@ -274,7 +294,6 @@ export const LoginScreen: React.FC = () => {
             )}
           </div>
         </div>
-
       </div>
     </div>
   );
