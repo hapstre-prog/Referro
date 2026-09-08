@@ -5,6 +5,7 @@ import {
   getMatchedOutsideNetworkResults,
   LEVEL_1_BENCHMARKS
 } from '../data/outsideNetworkData';
+import { JourneyTimeline } from '../components/JourneyTimeline';
 import { 
   Search,
   Sparkles, 
@@ -449,6 +450,17 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
             </div>
           </button>
         </div>
+      )}
+
+      {/* JOURNEY TIMELINE — shown below How It Works cards, before search */}
+      {!hasSearched && (
+        <JourneyTimeline
+          journeyTitle="Stale Listing? Find Buyers"
+          onFindPeople={() => {
+            setQuery('Need a top buyer agent for my $7.85M Pacific Heights historic luxury listing with liquid cash buyers.');
+            executeSearch(undefined, 'Need a top buyer agent for my $7.85M Pacific Heights historic luxury listing with liquid cash buyers.');
+          }}
+        />
       )}
 
       {/* RESULTS SECTION (Rendered directly below once searched) */}
