@@ -69,22 +69,24 @@ export async function searchForSaleListings(
 
     if (!res.ok) return [];
     const data = await res.json() as any;
-    const listings = data?.data?.results || data?.results || [];
-    
+    const listings = data?.listings || [];
+
     return listings.slice(0, limit).map((item: any): MLSProperty => ({
-      id: item.id || item.listing_id || `mls_${Math.random().toString(36).slice(2)}`,
-      address: item.location?.address_line || item.address || item.location?.address || 'Address unavailable',
-      price: item.price || item.list_price || 0,
-      beds: item.beds || item.bedrooms || 0,
-      baths: item.baths || item.bathrooms || 0,
-      sqft: item.sqft || item.sqft_raw || 0,
-      propertyType: item.prop_type || item.property_type || 'residential',
+      id: item.listing_id || item.property_id || `mls_${Math.random().toString(36).slice(2)}`,
+      address: item.location?.address?.line || 'Address unavailable',
+      price: item.list_price || 0,
+      beds: item.description?.beds || 0,
+      baths: item.description?.baths || 0,
+      sqft: item.description?.sqft || 0,
+      propertyType: item.description?.type || 'residential',
       status: 'for_sale',
-      daysOnMarket: item.days_on_market || item.dom || 0,
-      photoUrl: item.photo || item.primary_photo || undefined,
-      latitude: item.location?.lat || undefined,
-      longitude: item.location?.lon || undefined,
-      description: item.description || undefined,
+      daysOnMarket: item.list_date
+        ? Math.max(0, Math.floor((Date.now() - new Date(item.list_date).getTime()) / 86400000))
+        : 0,
+      photoUrl: item.primary_photo?.href || undefined,
+      latitude: item.location?.address?.coordinate?.lat || undefined,
+      longitude: item.location?.address?.coordinate?.lon || undefined,
+      description: item.description?.text || undefined,
     }));
   } catch {
     return [];
@@ -102,26 +104,26 @@ export async function searchSoldListings(
 
   try {
     const params = new URLSearchParams({ location, sort: 'sold_date' });
-    const res = await fetch(`${BASE_URL}/sold?${params}`, {
+    const res = await fetch(`${BASE_URL}/sold-homes?${params}`, {
       headers: headers(),
       signal: AbortSignal.timeout(8000),
     });
 
     if (!res.ok) return [];
     const data = await res.json() as any;
-    const listings = data?.data?.results || data?.results || [];
+    const listings = data?.listings || [];
 
     return listings.slice(0, limit).map((item: any): MLSProperty => ({
-      id: item.id || item.listing_id || `mls_sold_${Math.random().toString(36).slice(2)}`,
-      address: item.location?.address_line || item.address || item.location?.address || 'Address unavailable',
-      price: item.price || item.sold_price || 0,
-      beds: item.beds || item.bedrooms || 0,
-      baths: item.baths || item.bathrooms || 0,
-      sqft: item.sqft || item.sqft_raw || 0,
-      propertyType: item.prop_type || item.property_type || 'residential',
+      id: item.listing_id || item.property_id || `mls_sold_${Math.random().toString(36).slice(2)}`,
+      address: item.location?.address?.line || 'Address unavailable',
+      price: item.last_sold_price || item.list_price || 0,
+      beds: item.description?.beds || 0,
+      baths: item.description?.baths || 0,
+      sqft: item.description?.sqft || 0,
+      propertyType: item.description?.type || 'residential',
       status: 'sold',
-      daysOnMarket: item.days_on_market || item.dom || 0,
-      photoUrl: item.photo || undefined,
+      daysOnMarket: 0,
+      photoUrl: item.primary_photo?.href || undefined,
     }));
   } catch {
     return [];
