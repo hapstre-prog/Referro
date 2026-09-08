@@ -10,6 +10,7 @@ import { ZeroCreditModal } from './components/ZeroCreditModal';
 import { ReferralAIAssistant } from './components/ReferralAIAssistant';
 import { LinkedInConnectModal } from './components/LinkedInConnectModal';
 import { AuthCallback } from './components/AuthCallback';
+import { LoginScreen } from './components/LoginScreen';
 
 // Views
 import { DashboardView } from './views/DashboardView';
@@ -28,8 +29,18 @@ import { AdminCreditsView } from './views/AdminCreditsView';
 import { MatchAndReferView } from './views/MatchAndReferView';
 
 const AppContent: React.FC = () => {
-  const { activeTab } = useApp();
+  const { activeTab, isAuthenticated, isDemoMode } = useApp();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Show login screen when not authenticated and not in demo mode
+  if (!isAuthenticated && !isDemoMode) {
+    return (
+      <>
+        <LoginScreen />
+        <AuthCallback />
+      </>
+    );
+  }
 
   const renderActiveView = () => {
     switch (activeTab) {

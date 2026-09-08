@@ -11,14 +11,17 @@ import {
   Layers, 
   Menu,
   ChevronDown,
-  Linkedin
+  Linkedin,
+  LogOut
 } from 'lucide-react';
 
 export const Navbar: React.FC<{ onMobileMenuToggle?: () => void }> = ({ onMobileMenuToggle }) => {
   const { 
     user, 
     isDemoMode, 
+    isAuthenticated,
     setDemoMode, 
+    logout,
     wallet, 
     notifications, 
     markNotificationAsRead, 
@@ -198,6 +201,17 @@ export const Navbar: React.FC<{ onMobileMenuToggle?: () => void }> = ({ onMobile
             </span>
           </div>
         </div>
+
+        {/* Logout — shown when authenticated (not demo) */}
+        {isAuthenticated && !isDemoMode && (
+          <button
+            onClick={logout}
+            className="p-2 rounded-xl border border-slate-200 hover:bg-rose-50 hover:border-rose-200 hover:text-rose-600 text-slate-500 transition-colors"
+            title="Sign out"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
+        )}
       </div>
     </header>
   );

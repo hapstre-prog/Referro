@@ -72,6 +72,67 @@ async function startServer() {
     res.json({ success: true, user: DEMO_USER, mode: 'demo' });
   });
 
+  // Email-based registration & login (in-memory user store)
+  const emailUsers: Record<string, { id: string; name: string; email: string; password: string; title: string; avatarUrl: string }> = {};
+
+  app.post('/api/auth/register', async (req, res) => {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+      return res.status(400).json({ error: 'Name, email, and password are required.' });
+    }
+    if (password.length < 6) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters.' });
+    }
+    const key = email.toLowerCase().trim();
+    if (emailUsers[key]) {
+      return res.status(409).json({ error: 'An account with this email already exists.' });
+    }
+
+    const id = `user_${Date.now()}`;
+    const avatarUrl = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(name)}`;
+    emailUsers[key] = { id, name, email: key, password, title: 'Real Estate Professional', avatarUrl };
+
+    res.json({
+      success: true,
+      user: {
+        ...DEMO_USER,
+        id,
+        name,
+        email: key,
+        avatarUrl,
+        title: 'Real Estate Professional',
+        isVerified: false,
+        complianceStatus: 'pending' as const,
+      },
+    });
+  });
+
+  app.post('/api/auth/email', async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required.' });
+    }
+    const key = email.toLowerCase().trim();
+    const record = emailUsers[key];
+    if (!record || record.password !== password) {
+      return res.status(401).json({ error: 'Invalid email or password.' });
+    }
+
+    res.json({
+      success: true,
+      user: {
+        ...DEMO_USER,
+        id: record.id,
+        name: record.name,
+        email: record.email,
+        avatarUrl: record.avatarUrl,
+        title: record.title,
+        isVerified: false,
+        complianceStatus: 'pending' as const,
+      },
+    });
+  });
+
   // LinkedIn OAuth callback: exchange code for token, fetch profile
   app.post('/api/auth/linkedin/callback', async (req, res) => {
     const { code } = req.body;

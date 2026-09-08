@@ -33,7 +33,11 @@ import {
 interface AppContextType {
   user: UserProfile;
   isDemoMode: boolean;
+  isAuthenticated: boolean;
   setDemoMode: (val: boolean) => void;
+  loginWithEmail: (email: string, password: string) => Promise<void>;
+  registerWithEmail: (name: string, email: string, password: string) => Promise<void>;
+  logout: () => void;
   activeTab: string;
   setActiveTab: (tab: string) => void;
   
@@ -92,7 +96,8 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<UserProfile>(DEMO_USER);
-  const [isDemoMode, setIsDemoModeState] = useState<boolean>(true); // Default to Demo Mode so reviewers can explore immediately
+  const [isDemoMode, setIsDemoModeState] = useState<boolean>(false); // Start at login screen; user can enter demo from there
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   
   // Data lists
@@ -587,6 +592,50 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setMessages(prev => [...prev, msg]);
   };
 
+  // Email login
+  const loginWithEmail = async (email: string, password: string) => {
+    const res = await fetch('/api/auth/email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Login failed.');
+    if (data.success && data.user) {
+      setUser(data.user);
+      setIsAuthenticated(true);
+      setIsDemoModeState(false);
+      setWallet(prev => ({ ...prev, isDemoUnlimited: false }));
+    }
+  };
+
+  // Email registration
+  const registerWithEmail = async (name: string, email: string, password: string) => {
+    const res = await fetch('/api/auth/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Registration failed.');
+    if (data.success && data.user) {
+      setUser(data.user);
+      setIsAuthenticated(true);
+      setIsDemoModeState(false);
+      setWallet(prev => ({ ...prev, isDemoUnlimited: false }));
+      setIsFirstTimeWelcomeOpen(true);
+    }
+  };
+
+  // Logout
+  const logout = () => {
+    setIsAuthenticated(false);
+    setIsDemoModeState(true);
+    setUser(DEMO_USER);
+    setActiveTab('dashboard');
+    setWallet({ ...INITIAL_CREDIT_WALLET, isDemoUnlimited: true });
+  };
+
   // LinkedIn OAuth: redirect user to LinkedIn authorization page
   const connectLinkedIn = async () => {
     try {
@@ -605,6 +654,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const handleLinkedInCallback = async (profile: any) => {
     setIsLinkedInConnected(true);
     setIsLinkedInConnectOpen(false);
+    setIsAuthenticated(true);
     setIsDemoModeState(false);
     setWallet(prev => ({ ...prev, isDemoUnlimited: false }));
 
@@ -640,7 +690,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       value={{
         user,
         isDemoMode,
+        isAuthenticated,
         setDemoMode,
+        loginWithEmail,
+        registerWithEmail,
+        logout,
         activeTab,
         setActiveTab,
         opportunities,
