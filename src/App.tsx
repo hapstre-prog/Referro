@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AppProvider, useApp } from './context/AppContext';
 import { DemoBanner } from './components/DemoBanner';
 import { LowCreditBanner } from './components/LowCreditBanner';
@@ -11,8 +11,6 @@ import { ReferralAIAssistant } from './components/ReferralAIAssistant';
 import { LinkedInConnectModal } from './components/LinkedInConnectModal';
 import { LinkedInSyncModal } from './components/LinkedInSyncModal';
 import { AuthCallback } from './components/AuthCallback';
-import { LoginScreen } from './components/LoginScreen';
-import { LandingSlider } from './components/LandingSlider';
 
 // Views
 import { DashboardView } from './views/DashboardView';
@@ -31,18 +29,15 @@ import { AdminCreditsView } from './views/AdminCreditsView';
 import { MatchAndReferView } from './views/MatchAndReferView';
 
 const AppContent: React.FC = () => {
-  const { activeTab, isAuthenticated, isDemoMode } = useApp();
+  const { activeTab, isAuthenticated, isDemoMode, setDemoMode } = useApp();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Show landing slider (landing page + dashboard preview) when not authenticated and not in demo mode
-  if (!isAuthenticated && !isDemoMode) {
-    return (
-      <>
-        <LandingSlider />
-        <AuthCallback />
-      </>
-    );
-  }
+  // Auto-enter demo mode to skip landing page and go straight to the app
+  useEffect(() => {
+    if (!isAuthenticated && !isDemoMode) {
+      setDemoMode(true);
+    }
+  }, [isAuthenticated, isDemoMode, setDemoMode]);
 
   const renderActiveView = () => {
     switch (activeTab) {
