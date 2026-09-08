@@ -9,6 +9,7 @@ import { CreditConfirmationModal } from './components/CreditConfirmationModal';
 import { ZeroCreditModal } from './components/ZeroCreditModal';
 import { ReferralAIAssistant } from './components/ReferralAIAssistant';
 import { LinkedInConnectModal } from './components/LinkedInConnectModal';
+import { LinkedInSyncModal } from './components/LinkedInSyncModal';
 import { AuthCallback } from './components/AuthCallback';
 import { LoginScreen } from './components/LoginScreen';
 
@@ -106,6 +107,7 @@ const AppContent: React.FC = () => {
       <ZeroCreditModal />
       <ReferralAIAssistant />
       <LinkedInConnectModal />
+      <LinkedInSyncModal />
       <AuthCallback />
     </div>
   );

@@ -12,6 +12,16 @@
       "name": "RAPIDAPI_KEY",
       "description": "RapidAPI key for the US Real Estate Listings API (https://rapidapi.com/apimaker/api/us-real-estate-listings). Must subscribe to the API's free tier (Basic = 100 req/month) after getting the key. Powers backend MLS data enrichment for AI recommendations.",
       "requiredAtBoot": false
+    },
+    {
+      "name": "LINKEDIN_CLIENT_ID",
+      "description": "LinkedIn OAuth Client ID from the LinkedIn Developer Network (developer.linkedin.com → My Apps → your app → Credentials). Required to enable LinkedIn login and network connection syncing.",
+      "requiredAtBoot": false
+    },
+    {
+      "name": "LINKEDIN_CLIENT_SECRET",
+      "description": "LinkedIn OAuth Client Secret from the LinkedIn Developer Network (developer.linkedin.com → My Apps → your app → Credentials). Required together with LINKEDIN_CLIENT_ID for the OAuth token exchange.",
+      "requiredAtBoot": false
     }
   ]
 }

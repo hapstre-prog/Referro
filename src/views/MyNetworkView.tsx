@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { NetworkGraph } from '../components/NetworkGraph';
-import { 
-  Users, 
-  Search, 
-  Filter, 
-  MapPin, 
-  ShieldCheck, 
-  Send, 
+import {
+  Users,
+  Search,
+  Filter,
+  MapPin,
+  ShieldCheck,
+  Send,
   ArrowRight,
   Sparkles,
   LayoutGrid,
-  GitBranch
+  GitBranch,
+  Linkedin,
+  RefreshCw
 } from 'lucide-react';
 
 export const MyNetworkView: React.FC = () => {
-  const { networkContacts, setActiveTab } = useApp();
+  const { networkContacts, setActiveTab, setIsLinkedInSyncOpen, isLinkedInConnected } = useApp();
   const [viewMode, setViewMode] = useState<'list' | 'graph'>('list');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDegree, setSelectedDegree] = useState<number | 'all'>('all');
@@ -51,6 +53,17 @@ export const MyNetworkView: React.FC = () => {
             </p>
           </div>
 
+          {/* LinkedIn Sync Button */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsLinkedInSyncOpen(true)}
+              className="flex items-center space-x-1.5 px-4 py-2.5 rounded-xl bg-[#0A66C2] hover:bg-[#0A4fA8] text-white font-semibold text-xs shadow-sm transition-colors"
+              title="Sync your LinkedIn connections into your network"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>Sync from LinkedIn</span>
+            </button>
+
           {/* View Mode Toggle */}
           <div className="flex items-center bg-slate-100 p-1 rounded-xl text-xs font-bold">
             <button
@@ -71,6 +84,7 @@ export const MyNetworkView: React.FC = () => {
               <GitBranch className="w-3.5 h-3.5" />
               <span>Relationship Graph</span>
             </button>
+          </div>
           </div>
         </div>
 

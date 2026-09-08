@@ -77,6 +77,10 @@ interface AppContextType {
   setIsLinkedInConnectOpen: (open: boolean) => void;
   connectLinkedIn: () => Promise<void>;
   handleLinkedInCallback: (profile: any) => Promise<void>;
+  // LinkedIn Network Sync
+  isLinkedInSyncOpen: boolean;
+  setIsLinkedInSyncOpen: (open: boolean) => void;
+  syncLinkedInConnections: () => Promise<{ imported: number; total: number }>;
   
   // Handlers
   consumeSearchCredit: (type: 'my_network' | 'beyond_network', onSuccess: () => void) => boolean;
@@ -132,6 +136,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // LinkedIn Auth State
   const [isLinkedInConnected, setIsLinkedInConnected] = useState<boolean>(false);
   const [isLinkedInConnectOpen, setIsLinkedInConnectOpen] = useState<boolean>(false);
+  const [isLinkedInSyncOpen, setIsLinkedInSyncOpen] = useState<boolean>(false);
 
   // Load backend data if available
   useEffect(() => {
@@ -685,6 +690,23 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     ]);
   };
 
+  // LinkedIn Network Sync: fetch and import connections
+  const syncLinkedInConnections = async (): Promise<{ imported: number; total: number }> => {
+    const res = await fetch('/api/linkedin/sync', { method: 'POST' });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Sync failed.');
+
+    if (data.success && data.contacts) {
+      setNetworkContacts(prev => {
+        const existingNames = new Set(prev.map(c => c.name));
+        const newContacts = data.contacts.filter((c: any) => !existingNames.has(c.name));
+        return [...newContacts, ...prev];
+      });
+    }
+
+    return { imported: data.imported || 0, total: data.total || 0 };
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -721,6 +743,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setIsLinkedInConnectOpen,
         connectLinkedIn,
         handleLinkedInCallback,
+        isLinkedInSyncOpen,
+        setIsLinkedInSyncOpen,
+        syncLinkedInConnections,
         consumeSearchCredit,
         promptBeyondNetworkSearch,
         purchasePackage,
