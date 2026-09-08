@@ -169,7 +169,7 @@ export async function draftIntroductionWithAI(params: {
   const client = getAIClient();
 
   if (!client) {
-    return `Hi ${params.takerName},\n\nI would like to introduce you to a high-priority referral opportunity: "${params.opportunityTitle}" in ${params.targetMarket}.\n\nGiven your exceptional track record in ${params.takerExpertise.slice(0, 2).join(' and ')}, you are an ideal match for this client. I have registered our 25% referral agreement on Relay.\n\nI'll let you take it from here! Best,\n${params.giverName}`;
+    return `Hi ${params.takerName},\n\nI'd like to introduce you to a referral opportunity: "${params.opportunityTitle}" in ${params.targetMarket}.\n\nGiven your track record in ${params.takerExpertise.slice(0, 2).join(' and ')}, you're a great fit for this client. I've registered our 25% referral agreement on Referro.\n\nI'll let you take it from here! Best,\n${params.giverName}`;
   }
 
   try {
@@ -200,7 +200,7 @@ export async function chatReferralAssistantWithAI(prompt: string, context: strin
   const client = getAIClient();
 
   if (!client) {
-    return "I'm Referral AI, your intelligence partner. I can help you structure referral opportunities, analyze match scores, draft introductions, and optimize your 25% referral fee agreements. How can I assist with your deal pipeline today?";
+    return "I'm Referral AI. I can help you find buyer agents for stale listings, refer clients out-of-state, share tips as a contractor, or match someone you know with the right agent — and everyone gets paid when the deal closes. What's your situation?";
   }
 
   // Pull real MLS market data to ground AI recommendations in actual listings
@@ -219,14 +219,22 @@ export async function chatReferralAssistantWithAI(prompt: string, context: strin
 
   try {
     const response = await callGeminiWithFallback(client, {
-      contents: `You are Referral AI, an executive assistant built into Referro, the premier real estate referral network.
-Help the agent with their referral strategy, match selection, fee negotiations, or deal tracking.
-Context of current user & pipeline: ${context}
+      contents: `You are Referral AI, the assistant built into Referro — a real estate referral platform where anyone can turn a connection into a paid opportunity.
 
-${marketData ? `\n${marketData}\n\nUse this live MLS market data to ground your recommendations with real listing evidence. Reference specific properties, prices, and market trends when explaining why an agent or property is a good match.\n` : ''}
+Referro serves four types of users:
+1. AGENTS WITH STALE LISTINGS: Their listing has been sitting too long. They need buyer agents who have ready buyers.
+2. AGENTS WITH OUT-OF-STATE CLIENTS: Their client needs an agent in another state where they're not licensed. They refer to a local licensed agent and keep the referral fee.
+3. TIP PROVIDERS (contractors, designers, anyone): They know a home is about to sell. They share the tip, Referro finds the right agent, and they earn a cut when the deal closes.
+4. MATCHMAKERS (anyone): They know someone looking for a home. They share the info, Referro finds the right agent, and they earn a referral fee when the deal closes.
+
+The platform is free to explore. Asking Referral AI is always free. Credits are only consumed when generating leads via Beyond Network AI search.
+
+Context of current user: ${context}
+
+${marketData ? `\n${marketData}\n\nUse this live MLS market data to ground your recommendations with real listing evidence.\n` : ''}
 User question: "${prompt}"
 
-Provide concise, highly actionable, strategic advice (under 120 words).`,
+Provide concise, actionable advice (under 120 words). Address the user's specific situation directly. Do not assume they are a luxury agent — they could be a contractor, a regular person, or an agent.`,
     });
 
     if (response && response.text) {
@@ -243,29 +251,40 @@ Provide concise, highly actionable, strategic advice (under 120 words).`,
 function contextualChatFallback(prompt: string): string {
   const lower = prompt.toLowerCase();
 
-  if (lower.includes('miami')) {
-    return "For Miami, I'd match you with agents specializing in luxury relocations — particularly those with proven track records in Coconut Grove, Brickell, and Coral Gables. Referro's network includes verified agents who average $4M+ in closed luxury volume. A standard 25% referral fee applies. Click 'Start to find the right people' to browse your network for Miami specialists — it's always free.";
+  // Stale listing
+  if (lower.includes('stale') || lower.includes('sitting') || lower.includes('too long') || (lower.includes('listing') && lower.includes('buyer'))) {
+    return "If your listing has been sitting too long, Referro connects you with buyer agents who have active buyers in your area. Post your listing as an opportunity, and we'll match you with agents who can bring qualified buyers. You keep your commission — the buyer agent gets their side. Click 'Find the right people' to start.";
   }
-  if (lower.includes('referral fee') || lower.includes('fee split') || lower.includes('commission')) {
-    return "A standard referral fee in luxury real estate is 25% of the gross commission, paid at closing. Some markets and price points may justify 30-35% for high-value leads. Referro tracks and protects these agreements automatically. You can negotiate terms directly with your matched agent within the platform.";
+  // Out-of-state referral
+  if (lower.includes('out-of-state') || lower.includes('out of state') || lower.includes('licensed in') || lower.includes('another state') || lower.includes('relocat')) {
+    return "If your client needs an agent in a state where you're not licensed, Referro matches them with a verified local agent. You refer the client, the local agent handles the deal, and you collect a referral fee at closing — typically 25% of the gross commission. Click 'Find the right people' to search for agents in that market.";
   }
-  if (lower.includes('match') || lower.includes('right agent') || lower.includes('find the right')) {
-    return "Referro uses AI-powered matching that considers market expertise, price band experience, response rate, and verified deal history. When you post an opportunity, we score every agent in your network against your criteria and surface the top matches. Try the 'Start to find the right people' button — searching your network is always free with no credit cost.";
+  // Contractor / tip provider
+  if (lower.includes('contractor') || lower.includes('designer') || lower.includes('tip') || lower.includes('about to sell') || lower.includes('knows a home')) {
+    return "If you know a home is about to sell — maybe you're a contractor, designer, or just well-connected — share the tip on Referro. We'll find the right listing agent for that property. When the deal closes, you earn a cut of the commission. No license required. Click 'Find the right people' to get started.";
   }
-  if (lower.includes('free') || lower.includes('credit') || lower.includes('cost') || lower.includes('price')) {
-    return "Searching your own network on Referro is always free — no credits consumed, no limits. Credits are only used for 'Beyond Network' AI searches that find agents outside your current connections. You start with 5 free credits for those searches. Click 'Start to find the right people' to explore your network now.";
+  // Matchmaker
+  if (lower.includes('knows someone') || lower.includes('looking for a home') || lower.includes('looking for homes') || lower.includes('matchmaker') || lower.includes('hook up') || lower.includes('hookup')) {
+    return "If you know someone looking for a home, share their info on Referro. We'll match them with the right buyer agent. If that agent closes the deal, you earn a referral fee — no real estate license needed. You're the matchmaker, and you get paid when it closes. Click 'Find the right people' to start.";
   }
-  if (lower.includes('linkedin') || lower.includes('sync') || lower.includes('connect')) {
-    return "You can sync your LinkedIn connections to instantly build your Referro network. Once connected, you'll see which of your contacts are verified real estate professionals and can start sending referrals immediately. Sign up and click 'Continue with LinkedIn' to get started.";
+  // Referral fees
+  if (lower.includes('referral fee') || lower.includes('fee split') || lower.includes('commission') || lower.includes('cut') || lower.includes('get paid') || lower.includes('how much')) {
+    return "Referral fees on Referro are typically 25% of the gross commission, paid at closing. For tip providers and matchmakers who aren't licensed agents, the cut is negotiated with the agent upfront. Referro tracks and protects these agreements automatically so everyone gets paid when the deal closes.";
   }
-  if (lower.includes('introduc') || lower.includes('draft') || lower.includes('message')) {
-    return "I can draft a warm introduction message for you. When you match with an agent, Referro generates a personalized intro highlighting why they were selected, the opportunity details, and the agreed referral terms. You can review and send it directly from the platform.";
-  }
+  // How it works
   if (lower.includes('how') && (lower.includes('referro') || lower.includes('work') || lower.includes('platform'))) {
-    return "Referro works in three steps: 1) Sync your LinkedIn network to see your existing connections. 2) Post referral opportunities (give or take). 3) Our AI matches you with the best agents and helps you manage the referral through to closing. Searching your network is always free — try it now with the button on the left.";
+    return "Referro connects anyone who knows about a real estate opportunity with the right professional to close it. Agents find buyer agents for stale listings, refer clients out-of-state, contractors share tips about homes about to sell, and anyone can match a friend with an agent. Everyone who helps gets paid when the deal closes. Click 'Find the right people' to explore — it's free.";
+  }
+  // Free / cost
+  if (lower.includes('free') || lower.includes('credit') || lower.includes('cost') || lower.includes('price')) {
+    return "Exploring your network and asking Referral AI are completely free — no credits, no limits. Credits are only used for 'Beyond Network' AI searches that find agents outside your current connections. Click 'Find the right people' to start exploring for free.";
+  }
+  // Matching
+  if (lower.includes('match') || lower.includes('right agent') || lower.includes('find the right')) {
+    return "Referro matches you with the right agent based on location, property type, price range, and track record. Whether you need a buyer agent, a local pro in another state, or an agent for a tip you're sharing — we'll find the best fit. Click 'Find the right people' to see your matches.";
   }
 
-  return "I can help you find the right referral agent, structure fee agreements, draft introductions, or explain how Referro works. Try asking about a specific market like Miami, or about referral fees and matching. You can also click 'Start to find the right people' to explore your network — it's always free.";
+  return "I can help you with any real estate connection: find buyer agents for stale listings, refer clients out-of-state, share tips as a contractor, or match someone you know with the right agent. Everyone gets paid when the deal closes. What's your situation?";
 }
 
 // Intelligent heuristic fallback for offline, demo, and temporary high-demand reliability

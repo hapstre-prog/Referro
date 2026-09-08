@@ -8,8 +8,8 @@ export const ReferralAIAssistant: React.FC = () => {
   const [messages, setMessages] = useState<Array<{ role: 'ai' | 'user'; text: string; action?: { label: string; tab: string } }>>([
     {
       role: 'ai',
-      text: `Hello ${user.name}! I'm Referral AI, your intelligence partner on Referro. I help you structure referral leads, score high-value matches, draft warm intros, and optimize your 25% referral commission splits. How can I help today?`,
-      action: { label: 'Explore Miami Relocation Match', tab: 'give' }
+      text: `Hello ${user.name}! I'm Referral AI. I can help you find buyer agents for stale listings, refer clients out-of-state, share tips, or match someone you know with the right agent. What do you need?`,
+      action: { label: 'Explore Your Network', tab: 'give' }
     }
   ]);
   const [input, setInput] = useState('');
@@ -46,7 +46,7 @@ export const ReferralAIAssistant: React.FC = () => {
         ...prev,
         {
           role: 'ai',
-          text: "I analyzed your request. I recommend posting this as a Give opportunity with standard 25% referral terms to match with certified luxury specialists in your target market."
+          text: "I can help you find the right agent, structure a referral fee, or share a tip. Try asking about a specific situation — stale listing, out-of-state client, or a lead you want to share."
         }
       ]);
     } finally {
@@ -122,22 +122,22 @@ export const ReferralAIAssistant: React.FC = () => {
       {/* Suggested prompts */}
       <div className="p-2 bg-white border-t border-slate-100 flex items-center space-x-1.5 overflow-x-auto text-[10px] text-slate-600">
         <button
-          onClick={() => setInput("How should I structure a 25% referral fee agreement?")}
+          onClick={() => setInput("My listing has been sitting too long, how do I find buyer agents?")}
           className="whitespace-nowrap px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200"
         >
-          Fee Structure?
+          Stale listing?
         </button>
         <button
-          onClick={() => setInput("What makes Sarah Chen a 94% match for Miami?")}
+          onClick={() => setInput("How do I refer a client to an agent in another state?")}
           className="whitespace-nowrap px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200"
         >
-          Why Sarah 94%?
+          Out-of-state?
         </button>
         <button
-          onClick={() => setInput("How do Beyond Network credits work?")}
+          onClick={() => setInput("How do referral fees and tip cuts work?")}
           className="whitespace-nowrap px-2 py-1 rounded-md bg-slate-100 hover:bg-slate-200"
         >
-          Credits explanation?
+          How do fees work?
         </button>
       </div>
 

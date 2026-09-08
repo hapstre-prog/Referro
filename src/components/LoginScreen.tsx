@@ -81,7 +81,7 @@ export const LoginScreen: React.FC = () => {
     } catch {
       setMessages(prev => [
         ...prev,
-        { role: 'ai', text: "I can help you find the right referral partners, structure fee agreements, and match with verified agents across luxury US markets. What would you like to know?" },
+        { role: 'ai', text: "I can help you find the right agent, structure a referral fee, or share a tip about a home. What's your situation?" },
       ]);
     } finally {
       setLoading(false);
