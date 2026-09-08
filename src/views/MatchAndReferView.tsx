@@ -5,7 +5,7 @@ import {
   getMatchedOutsideNetworkResults,
   LEVEL_1_BENCHMARKS
 } from '../data/outsideNetworkData';
-import { JourneyTimeline } from '../components/JourneyTimeline';
+import { JourneyTimeline, JourneyStep } from '../components/JourneyTimeline';
 import { 
   Search,
   Sparkles, 
@@ -37,6 +37,51 @@ import {
 interface MatchAndReferViewProps {
   initialMode?: 'auto' | 'give' | 'take';
 }
+
+const JOURNEYS = [
+  {
+    title: 'Stale Listing? Find Buyers',
+    desc: 'Your listing has been sitting too long. We connect you with buyer agents who have ready buyers.',
+    icon: Home,
+    query: 'Need a top buyer agent for my $7.85M Pacific Heights historic luxury listing with liquid cash buyers.',
+    steps: [
+      { num: 1, title: 'Post', desc: 'List your stale property on Referro' },
+      { num: 2, title: 'Match', desc: 'AI finds buyer agents with ready buyers' },
+      { num: 3, title: 'Accept', desc: 'Agent accepts your referral request' },
+      { num: 4, title: 'Sign', desc: 'Agree the referral fee split on Referro' },
+      { num: 5, title: 'Offer', desc: 'Buyer submits an offer on the property' },
+      { num: 6, title: 'Close', desc: 'Escrow opens and the deal closes' },
+      { num: 7, title: 'Get Paid', desc: 'Receive your referral fee payout' },
+    ] as JourneyStep[],
+  },
+  {
+    title: 'Out-of-State Referrals',
+    desc: 'Your client needs an agent in another state. We match them with a licensed local pro — you keep the referral fee.',
+    icon: MapPin,
+    query: 'Referring a verified tech executive buyer relocating from SF to Miami ($2M - $3.5M cash budget). Looking for Brickell luxury specialist.',
+    steps: [
+      { num: 1, title: 'Refer', desc: 'Share your out-of-area client need' },
+      { num: 2, title: 'Match', desc: 'AI finds licensed local agents' },
+      { num: 3, title: 'Accept', desc: 'Local agent accepts the referral' },
+      { num: 4, title: 'Sign', desc: 'Agree the referral fee split on Referro' },
+      { num: 5, title: 'Close', desc: 'Escrow opens and the deal closes' },
+      { num: 6, title: 'Get Paid', desc: 'Receive your referral fee payout' },
+    ] as JourneyStep[],
+  },
+  {
+    title: 'Anyone Can Earn',
+    desc: 'Contractors, designers, or anyone who knows someone looking to buy or sell — share the tip and earn a referral fee when the deal closes.',
+    icon: UserPlus,
+    query: 'I know a homeowner looking to sell their property — connect me with a listing agent.',
+    steps: [
+      { num: 1, title: 'Share', desc: 'Post your tip about a potential deal' },
+      { num: 2, title: 'Match', desc: 'AI finds the right professional' },
+      { num: 3, title: 'Connect', desc: 'Referro introduces you both' },
+      { num: 4, title: 'Close', desc: 'The professional closes the deal' },
+      { num: 5, title: 'Get Paid', desc: 'Receive your referral fee payout' },
+    ] as JourneyStep[],
+  },
+];
 
 const SEARCH_HINTS = [
   {
@@ -95,6 +140,8 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
   const [selectedForIntro, setSelectedForIntro] = useState<AIMatchCandidate | null>(null);
   const [introSentMessage, setIntroSentMessage] = useState<string | null>(null);
   const [unlockToast, setUnlockToast] = useState<{ message: string; type: 'success' | 'info' } | null>(null);
+
+  const [selectedJourney, setSelectedJourney] = useState(0);
 
   const resultsRef = useRef<HTMLDivElement>(null);
 
@@ -333,8 +380,8 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
       {/* GOOGLE-STYLE MINIMALIST SEARCH HERO */}
       <div className="bg-white rounded-3xl border border-slate-200/90 p-8 sm:p-10 shadow-sm text-center">
         {/* Title */}
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold mb-4">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ backgroundColor: '#E8E8FF', color: '#5D5FEF' }}>
+          <Sparkles className="w-3.5 h-3.5" style={{ color: '#5D5FEF' }} />
           <span>Natural Language Real Estate Match</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-3" style={{ color: '#1a1b26' }}>
@@ -346,7 +393,7 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
 
         {/* The Pure Google-Style Search Bar */}
         <div className="max-w-2xl mx-auto">
-          <div className="relative flex items-center bg-slate-50/80 hover:bg-white focus-within:bg-white rounded-full border border-slate-300 hover:border-slate-400 focus-within:border-indigo-600 focus-within:ring-4 focus-within:ring-indigo-100 transition-all shadow-xs p-1.5 pl-4 sm:pl-5">
+          <div className="relative flex items-center bg-slate-50/80 hover:bg-white focus-within:bg-white rounded-full border border-slate-300 hover:border-slate-400 focus-within:ring-4 focus-within:ring-indigo-100 transition-all shadow-xs p-1.5 pl-4 sm:pl-5" style={{ ['--tw-ring-color' as any]: 'rgba(93, 95, 239, 0.1)' }}>
             <Search className="w-5 h-5 text-slate-400 shrink-0 mr-3" />
             <input
               type="text"
@@ -368,9 +415,10 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
             <button
               onClick={() => executeSearch()}
               disabled={isAnalyzing}
-              className="px-5 py-2.5 rounded-full bg-indigo-600 hover:bg-indigo-700 active:scale-98 text-white font-bold text-xs sm:text-sm transition-all shadow-sm flex items-center space-x-1.5 shrink-0"
+              className="px-5 py-2.5 rounded-full active:scale-98 text-white font-bold text-xs sm:text-sm transition-all shadow-sm flex items-center space-x-1.5 shrink-0 hover:opacity-90"
+              style={{ backgroundColor: '#5D5FEF' }}
             >
-              <Sparkles className={`w-3.5 h-3.5 text-indigo-200 ${isAnalyzing ? 'animate-spin' : ''}`} />
+              <Sparkles className={`w-3.5 h-3.5 text-white/80 ${isAnalyzing ? 'animate-spin' : ''}`} />
               <span>{isAnalyzing ? 'Searching...' : 'Search'}</span>
             </button>
           </div>
@@ -398,67 +446,41 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
             How It Works — Click To See Your Journey
           </h2>
 
-          {/* Card 1 — Stale Listing (highlighted) */}
-          <button
-            onClick={() => {
-              setQuery('Need a top buyer agent for my $7.85M Pacific Heights historic luxury listing with liquid cash buyers.');
-              executeSearch(undefined, 'Need a top buyer agent for my $7.85M Pacific Heights historic luxury listing with liquid cash buyers.');
-            }}
-            className="w-full flex items-center gap-4 bg-white rounded-2xl p-5 shadow-sm text-left transition-all hover:shadow-md"
-            style={{ border: '2px solid #5D5FEF' }}
-          >
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: '#5D5FEF' }}>
-              <Home className="w-6 h-6 text-white" />
-            </div>
-            <div className="text-left">
-              <h3 className="font-bold text-sm mb-0.5" style={{ color: '#111827' }}>Stale Listing? Find Buyers</h3>
-              <p className="text-xs leading-relaxed" style={{ color: '#4B5563' }}>Your listing has been sitting too long. We connect you with buyer agents who have ready buyers.</p>
-            </div>
-          </button>
-
-          {/* Card 2 — Out-of-State Referrals */}
-          <button
-            onClick={() => {
-              setQuery('Referring a verified tech executive buyer relocating from SF to Miami ($2M - $3.5M cash budget). Looking for Brickell luxury specialist.');
-              executeSearch(undefined, 'Referring a verified tech executive buyer relocating from SF to Miami ($2M - $3.5M cash budget). Looking for Brickell luxury specialist.');
-            }}
-            className="w-full flex items-center gap-4 bg-white rounded-2xl p-5 shadow-sm text-left transition-all hover:shadow-md border border-slate-200"
-          >
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-indigo-50">
-              <MapPin className="w-6 h-6" style={{ color: '#5D5FEF' }} />
-            </div>
-            <div className="text-left">
-              <h3 className="font-bold text-sm mb-0.5" style={{ color: '#111827' }}>Out-of-State Referrals</h3>
-              <p className="text-xs leading-relaxed" style={{ color: '#4B5563' }}>Your client needs an agent in another state. We match them with a licensed local pro — you keep the referral fee.</p>
-            </div>
-          </button>
-
-          {/* Card 3 — Anyone Can Earn */}
-          <button
-            onClick={() => {
-              setQuery('I know a homeowner looking to sell their property — connect me with a listing agent.');
-              executeSearch(undefined, 'I know a homeowner looking to sell their property — connect me with a listing agent.');
-            }}
-            className="w-full flex items-center gap-4 bg-white rounded-2xl p-5 shadow-sm text-left transition-all hover:shadow-md border border-slate-200"
-          >
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 bg-indigo-50">
-              <UserPlus className="w-6 h-6" style={{ color: '#5D5FEF' }} />
-            </div>
-            <div className="text-left">
-              <h3 className="font-bold text-sm mb-0.5" style={{ color: '#111827' }}>Anyone Can Earn</h3>
-              <p className="text-xs leading-relaxed" style={{ color: '#4B5563' }}>Contractors, designers, or anyone who knows someone looking to buy or sell — share the tip and earn a referral fee when the deal closes.</p>
-            </div>
-          </button>
+          {JOURNEYS.map((journey, idx) => {
+            const isSelected = selectedJourney === idx;
+            const Icon = journey.icon;
+            return (
+              <button
+                key={idx}
+                onClick={() => setSelectedJourney(idx)}
+                className="w-full flex items-center gap-4 bg-white rounded-2xl p-5 shadow-sm text-left transition-all hover:shadow-md"
+                style={{ border: isSelected ? '2px solid #5D5FEF' : '1px solid #E5E7EB' }}
+              >
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: isSelected ? '#5D5FEF' : '#E8E8FF' }}
+                >
+                  <Icon className="w-6 h-6" style={{ color: isSelected ? '#FFFFFF' : '#5D5FEF' }} />
+                </div>
+                <div className="text-left">
+                  <h3 className="font-bold text-sm mb-0.5" style={{ color: '#111827' }}>{journey.title}</h3>
+                  <p className="text-xs leading-relaxed" style={{ color: '#4B5563' }}>{journey.desc}</p>
+                </div>
+              </button>
+            );
+          })}
         </div>
       )}
 
       {/* JOURNEY TIMELINE — shown below How It Works cards, before search */}
       {!hasSearched && (
         <JourneyTimeline
-          journeyTitle="Stale Listing? Find Buyers"
+          journeyTitle={JOURNEYS[selectedJourney].title}
+          steps={JOURNEYS[selectedJourney].steps}
           onFindPeople={() => {
-            setQuery('Need a top buyer agent for my $7.85M Pacific Heights historic luxury listing with liquid cash buyers.');
-            executeSearch(undefined, 'Need a top buyer agent for my $7.85M Pacific Heights historic luxury listing with liquid cash buyers.');
+            const q = JOURNEYS[selectedJourney].query;
+            setQuery(q);
+            executeSearch(undefined, q);
           }}
         />
       )}
