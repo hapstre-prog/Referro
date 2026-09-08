@@ -111,6 +111,7 @@ export const LoginScreen: React.FC = () => {
     if (!userText || loading) return;
 
     setInput('');
+    const historyForApi = messages.map(m => ({ role: m.role, text: m.text }));
     setMessages(prev => [...prev, { role: 'user', text: userText }]);
     setLoading(true);
 
@@ -121,6 +122,7 @@ export const LoginScreen: React.FC = () => {
         body: JSON.stringify({
           prompt: userText,
           context: 'Prospective user exploring Referro on the landing page.',
+          history: historyForApi,
         }),
       });
       const data = await res.json();

@@ -21,6 +21,7 @@ export const ReferralAIAssistant: React.FC = () => {
     if (!input.trim() || loading) return;
     const userText = input.trim();
     setInput('');
+    const historyForApi = messages.map(m => ({ role: m.role, text: m.text }));
     setMessages(prev => [...prev, { role: 'user', text: userText }]);
     setLoading(true);
 
@@ -30,7 +31,8 @@ export const ReferralAIAssistant: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           prompt: userText,
-          context: `User: ${user.name} (${user.company}). Active deals: ${deals.length}. Active opportunities: ${opportunities.length}. Markets: ${(user.marketsServed || []).join(', ')}.`
+          context: `User: ${user.name} (${user.company}). Active deals: ${deals.length}. Active opportunities: ${opportunities.length}. Markets: ${(user.marketsServed || []).join(', ')}.`,
+          history: historyForApi,
         })
       });
       const data = await res.json();

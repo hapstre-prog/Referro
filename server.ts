@@ -581,8 +581,8 @@ async function startServer() {
 
   app.post('/api/ai/assistant', async (req, res) => {
     try {
-      const { prompt, context } = req.body;
-      const reply = await chatReferralAssistantWithAI(prompt, context || 'Relay User Alex Morgan');
+      const { prompt, context, history } = req.body;
+      const reply = await chatReferralAssistantWithAI(prompt, context || 'Relay User Alex Morgan', history);
       res.json({ reply });
     } catch (err: any) {
       res.status(500).json({ error: err.message });

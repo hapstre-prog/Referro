@@ -196,7 +196,11 @@ Tone: Warm, collaborative, executive B2B tone. Highlight why ${params.takerName}
   return `Hi ${params.takerName},\n\nI would like to introduce you to our client for "${params.opportunityTitle}". You're a perfect match with your proven expertise in ${params.targetMarket}.\n\nBest,\n${params.giverName}`;
 }
 
-export async function chatReferralAssistantWithAI(prompt: string, context: string): Promise<string> {
+export async function chatReferralAssistantWithAI(
+  prompt: string,
+  context: string,
+  history?: Array<{ role: 'ai' | 'user'; text: string }>
+): Promise<string> {
   const client = getAIClient();
 
   if (!client) {
@@ -206,8 +210,7 @@ export async function chatReferralAssistantWithAI(prompt: string, context: strin
   // Pull real MLS market data to ground AI recommendations in actual listings
   let marketData = '';
   try {
-    // Extract a location from the prompt or context for MLS lookup
-    const locMatch = prompt.match(/(?:in|at|for|to)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?,\s*[A-Z]{2})/) 
+    const locMatch = prompt.match(/(?:in|at|for|to)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?,\s*[A-Z]{2})/)
       || context.match(/(?:market|location|area)[:\s]+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?,\s*[A-Z]{2})/);
     const location = locMatch?.[1] || '';
     if (location) {
@@ -217,9 +220,7 @@ export async function chatReferralAssistantWithAI(prompt: string, context: strin
     // Non-blocking — AI works fine without MLS data
   }
 
-  try {
-    const response = await callGeminiWithFallback(client, {
-      contents: `You are Referral AI, the assistant built into Referro — a real estate referral platform where anyone can turn a connection into a paid opportunity.
+  const systemInstruction = `You are Referral AI, the assistant built into Referro — a real estate referral platform where anyone can turn a connection into a paid opportunity.
 
 Referro serves four types of users:
 1. AGENTS WITH STALE LISTINGS: Their listing has been sitting too long. They need buyer agents who have ready buyers.
@@ -230,11 +231,34 @@ Referro serves four types of users:
 The platform is free to explore. Asking Referral AI is always free. Credits are only consumed when generating leads via Beyond Network AI search.
 
 Context of current user: ${context}
-
 ${marketData ? `\n${marketData}\n\nUse this live MLS market data to ground your recommendations with real listing evidence.\n` : ''}
-User question: "${prompt}"
 
-Provide concise, actionable advice (under 120 words). Address the user's specific situation directly. Do not assume they are a luxury agent — they could be a contractor, a regular person, or an agent.`,
+Provide concise, actionable advice (under 120 words). Address the user's specific situation directly. Do not assume they are a luxury agent — they could be a contractor, a regular person, or an agent. Remember and reference what the user said earlier in the conversation — do not repeat previous answers or ask the same questions again.`;
+
+  try {
+    // Build multi-turn conversation contents from history + current prompt
+    const contents: Array<{ role: string; parts: Array<{ text: string }> }> = [];
+
+    if (history && history.length > 0) {
+      for (const msg of history) {
+        contents.push({
+          role: msg.role === 'user' ? 'user' : 'model',
+          parts: [{ text: msg.text }],
+        });
+      }
+    }
+
+    // Add the current user prompt
+    contents.push({
+      role: 'user',
+      parts: [{ text: prompt }],
+    });
+
+    const response = await callGeminiWithFallback(client, {
+      contents,
+      config: {
+        systemInstruction,
+      },
     });
 
     if (response && response.text) {
@@ -244,12 +268,62 @@ Provide concise, actionable advice (under 120 words). Address the user's specifi
     // Non-blocking fallback
   }
 
-  return contextualChatFallback(prompt);
+  return contextualChatFallback(prompt, history);
 }
 
 // Contextual fallback for the chat assistant when Gemini is unavailable
-function contextualChatFallback(prompt: string): string {
+function contextualChatFallback(prompt: string, history?: Array<{ role: 'ai' | 'user'; text: string }>): string {
   const lower = prompt.toLowerCase();
+
+  // If we have conversation history, build a more contextual response
+  if (history && history.length > 0) {
+    const prevUserMsgs = history.filter(m => m.role === 'user').map(m => m.text.toLowerCase());
+    const prevAiMsgs = history.filter(m => m.role === 'ai').map(m => m.text.toLowerCase());
+    const allPrevText = [...prevUserMsgs, ...prevAiMsgs].join(' ');
+
+    // Determine what topic was already discussed
+    const discussedStaleListing = allPrevText.includes('stale') || allPrevText.includes('sitting') || allPrevText.includes('too long') || (allPrevText.includes('listing') && allPrevText.includes('buyer'));
+    const discussedOutOfState = allPrevText.includes('out-of-state') || allPrevText.includes('out of state') || allPrevText.includes('licensed in') || allPrevText.includes('another state');
+    const discussedContractor = allPrevText.includes('contractor') || allPrevText.includes('designer') || allPrevText.includes('tip') || allPrevText.includes('about to sell');
+    const discussedMatchmaker = allPrevText.includes('knows someone') || allPrevText.includes('looking for a home') || allPrevText.includes('matchmaker');
+    const discussedFees = allPrevText.includes('referral fee') || allPrevText.includes('fee split') || allPrevText.includes('commission') || allPrevText.includes('cut') || allPrevText.includes('get paid');
+
+    // Follow-up about a specific property or market detail
+    if (lower.includes('bedroom') || lower.includes('condo') || lower.includes('house') || lower.includes('property') || lower.includes('miami') || lower.includes('new york') || lower.includes('austin') || lower.includes('$') || lower.includes('price')) {
+      if (discussedStaleListing) {
+        return `Great — with those property details, I'd recommend looking for buyer agents who specialize in that price range and property type in your market. On Referro, post your listing with these details and our matching will surface agents who have recently closed similar properties. The buyer agent brings their buyer, you keep your listing-side commission, and the buyer agent gets their side. You can also agree a referral bonus if they bring a buyer who closes.`;
+      }
+      if (discussedOutOfState) {
+        return `Perfect — with that market detail, Referro can match your client with a licensed agent who knows that local market. The agent handles everything on the ground, and you collect a referral fee (typically 25% of gross commission) when the deal closes. Post the lead with the client's requirements and target market, and we'll find the right local agent.`;
+      }
+      if (discussedContractor) {
+        return `Great — with those details about the property, Referro can find a listing agent who specializes in that area and property type. Share the tip with as much detail as you have (address, condition, estimated value), and we'll match it with the right agent. When they list and sell the property, you earn your agreed cut — no license needed.`;
+      }
+      if (discussedMatchmaker) {
+        return `Perfect — with those details about what the buyer is looking for, Referro can match them with a buyer agent who specializes in that market and price range. Share the lead with the buyer's requirements, and we'll find the right agent. When the agent closes the deal, you earn your referral fee — no license needed.`;
+      }
+    }
+
+    // Follow-up about fees or getting paid
+    if (lower.includes('fee') || lower.includes('cut') || lower.includes('pay') || lower.includes('commission') || lower.includes('how much') || lower.includes('split')) {
+      return `Referral fees on Referro are typically 25% of the gross commission, paid at closing. For tip providers and matchmakers without a license, the cut is negotiated with the agent upfront — Referro tracks and protects the agreement so you get paid when the deal closes. The exact amount depends on the property's sale price and the agreed percentage.`;
+    }
+
+    // Follow-up about next steps or how to start
+    if (lower.includes('how do i') || lower.includes('next') || lower.includes('start') || lower.includes('begin') || lower.includes('sign up') || lower.includes('post')) {
+      if (discussedStaleListing) return `To get started: post your listing on Referro as an opportunity, including the property details and your market. Our AI will match you with buyer agents who have active buyers in your area. You review the matches, accept the ones you like, and agree on terms — all tracked through to closing.`;
+      if (discussedOutOfState) return `To get started: share your client's needs on Referro as a referral lead, including the target market. Our AI will match you with licensed local agents in that state. You pick the best match, refer your client, and collect your fee at closing.`;
+      if (discussedContractor) return `To get started: share the tip on Referro with the property details. We'll find the right listing agent for that property. You agree on your cut upfront, and when the property sells, you get paid — no license required.`;
+      if (discussedMatchmaker) return `To get started: share the buyer's info on Referro. We'll match them with the right buyer agent in their target market. You agree on a referral fee upfront, and when the deal closes, you get paid — no license required.`;
+    }
+
+    // Generic follow-up that references the previous topic
+    if (discussedStaleListing) return `Based on what we discussed about your listing — the next step is to post it on Referro so our AI can match you with buyer agents who have active buyers. You keep your commission, the buyer agent brings the buyer. Would you like to know more about how the matching works or what to include in your listing post?`;
+    if (discussedOutOfState) return `Following up on the out-of-state referral — the next step is to share your client's needs on Referro. We'll match them with a licensed local agent, and you collect a referral fee at closing. Would you like to know more about the fee structure or how to find the right agent in that market?`;
+    if (discussedContractor) return `Following up on your tip — the next step is to share the property details on Referro. We'll find the right listing agent, and you earn a cut when it sells. Would you like to know more about how the cut is negotiated or what details to include?`;
+    if (discussedMatchmaker) return `Following up on your match — the next step is to share the buyer's info on Referro. We'll find the right buyer agent, and you earn a referral fee at closing. Would you like to know more about the fee or how matching works?`;
+    if (discussedFees) return `To put the fee in context — the exact amount depends on the property's sale price and the agreed percentage. Referro tracks the agreement and ensures payment at closing. Would you like to start posting an opportunity or learn more about the matching process?`;
+  }
 
   // Stale listing
   if (lower.includes('stale') || lower.includes('sitting') || lower.includes('too long') || (lower.includes('listing') && lower.includes('buyer'))) {
