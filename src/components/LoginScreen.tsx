@@ -9,19 +9,16 @@ const SUGGESTED_PROMPTS = [
   'Can I search my network for free?',
 ];
 
-const FREE_CREDITS = 5;
-
 export const LoginScreen: React.FC = () => {
   const { setDemoMode, loginWithEmail, registerWithEmail, connectLinkedIn } = useApp();
   const [messages, setMessages] = useState<Array<{ role: 'ai' | 'user'; text: string }>>([
     {
       role: 'ai',
-      text: "Hi! I'm Referral AI. Ask me anything about real estate referrals, agent matching, or how Referro works. Each question uses 1 free credit — you start with 5.",
+      text: "Hi! I'm Referral AI. Ask me anything about real estate referrals, agent matching, or how Referro works — it's completely free!",
     },
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [creditsLeft, setCreditsLeft] = useState(FREE_CREDITS);
   const [showAuth, setShowAuth] = useState(false);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [name, setName] = useState('');
@@ -38,7 +35,7 @@ export const LoginScreen: React.FC = () => {
 
   const handleSend = async (text?: string) => {
     const userText = (text || input).trim();
-    if (!userText || loading || creditsLeft <= 0) return;
+    if (!userText || loading) return;
 
     setInput('');
     setMessages(prev => [...prev, { role: 'user', text: userText }]);
@@ -64,7 +61,6 @@ export const LoginScreen: React.FC = () => {
         { role: 'ai', text: "I can help you find the right referral partners, structure fee agreements, and match with verified agents across luxury US markets. What would you like to know?" },
       ]);
     } finally {
-      setCreditsLeft(c => Math.max(0, c - 1));
       setLoading(false);
     }
   };
@@ -163,7 +159,7 @@ export const LoginScreen: React.FC = () => {
         {/* Right: AI Question Interface */}
         <div className="order-1 lg:order-2">
           <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden flex flex-col" style={{ maxHeight: '600px' }}>
-            {/* Header with credit counter */}
+            {/* Header */}
             <div className="bg-slate-900 text-white p-4 flex items-center justify-between">
               <div className="flex items-center space-x-2.5">
                 <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
@@ -177,12 +173,9 @@ export const LoginScreen: React.FC = () => {
                   </span>
                 </div>
               </div>
-              {/* Credit counter */}
-              <div className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold transition-colors ${
-                creditsLeft > 0 ? 'bg-emerald-500/15 text-emerald-300' : 'bg-rose-500/15 text-rose-300'
-              }`}>
+              <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold bg-emerald-500/15 text-emerald-300">
                 <Sparkles className="w-3.5 h-3.5" />
-                <span>{creditsLeft} free {creditsLeft === 1 ? 'credit' : 'credits'}</span>
+                <span>Free</span>
               </div>
             </div>
 
@@ -217,27 +210,11 @@ export const LoginScreen: React.FC = () => {
                   <button
                     key={prompt}
                     onClick={() => handleSend(prompt)}
-                    disabled={creditsLeft <= 0}
-                    className="text-[10px] px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium transition-colors disabled:opacity-50"
+                    className="text-[10px] px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium transition-colors"
                   >
                     {prompt}
                   </button>
                 ))}
-              </div>
-            )}
-
-            {/* Credits exhausted message */}
-            {creditsLeft === 0 && (
-              <div className="p-3 bg-amber-50 border-t border-amber-100 text-center">
-                <p className="text-xs text-amber-700 font-semibold mb-2">
-                  You've used all your free questions. Create an account to get more credits!
-                </p>
-                <button
-                  onClick={() => setShowAuth(true)}
-                  className="text-xs text-indigo-600 font-bold hover:underline"
-                >
-                  Sign up for more credits →
-                </button>
               </div>
             )}
 
@@ -248,13 +225,12 @@ export const LoginScreen: React.FC = () => {
                 value={input}
                 onChange={e => setInput(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && handleSend()}
-                placeholder={creditsLeft > 0 ? 'Ask a question...' : 'No credits remaining'}
-                disabled={creditsLeft <= 0}
+                placeholder="Ask a question..."
                 className="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-colors disabled:opacity-50"
               />
               <button
                 onClick={() => handleSend()}
-                disabled={!input.trim() || loading || creditsLeft <= 0}
+                disabled={!input.trim() || loading}
                 className="p-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white transition-colors"
               >
                 <Send className="w-4 h-4" />
