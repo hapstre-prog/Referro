@@ -61,12 +61,16 @@ async function startServer() {
 
   app.get('/api/auth/linkedin/url', (req, res) => {
     // Generates official LinkedIn OAuth authorization URL
-    const clientId = process.env.LINKEDIN_CLIENT_ID || 'mock_linkedin_client_id';
+    const clientId = process.env.LINKEDIN_CLIENT_ID;
+    const clientSecret = process.env.LINKEDIN_CLIENT_SECRET;
+    const fullyConfigured = Boolean(clientId && clientSecret);
     const redirectUri = encodeURIComponent(`${process.env.APP_URL || 'http://localhost:3000'}/auth/callback`);
     const state = 'csrf_state_' + Math.random().toString(36).substring(7);
     const scope = encodeURIComponent('openid profile email r_connections');
-    const authUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&scope=${scope}`;
-    res.json({ authUrl, configured: Boolean(process.env.LINKEDIN_CLIENT_ID) });
+    const authUrl = fullyConfigured
+      ? `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&state=${state}&scope=${scope}`
+      : '';
+    res.json({ authUrl, configured: fullyConfigured });
   });
 
   app.post('/api/auth/demo', (req, res) => {
