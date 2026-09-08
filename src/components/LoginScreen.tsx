@@ -36,47 +36,47 @@ const SCENARIOS = [
 const TIMELINES: TimelineData[] = [
   {
     steps: [
-      { label: 'Search', desc: 'Post your listing on Referro' },
-      { label: 'Matching', desc: 'AI finds buyers & buyer agents' },
-      { label: 'Accepted', desc: 'Agent accepts your referral' },
-      { label: 'Contract', desc: 'Agree referral fee with Referro' },
-      { label: 'Offer', desc: 'Buyer makes an offer' },
-      { label: 'Close', desc: 'Deal closes' },
-      { label: 'Get Paid', desc: 'Receive your referral fee' },
+      { label: 'Post', desc: 'List your stale property on Referro' },
+      { label: 'Match', desc: 'AI finds buyer agents with ready buyers' },
+      { label: 'Accept', desc: 'Agent accepts your referral request' },
+      { label: 'Sign', desc: 'Agree the referral fee split on Referro' },
+      { label: 'Offer', desc: 'Buyer submits an offer on the property' },
+      { label: 'Close', desc: 'Escrow opens and the deal closes' },
+      { label: 'Get Paid', desc: 'Receive your referral fee payout' },
     ],
   },
   {
     steps: [
-      { label: 'Share Lead', desc: "Share your client's needs" },
-      { label: 'Matching', desc: 'AI finds a licensed local agent' },
-      { label: 'Accepted', desc: 'Agent accepts the referral' },
-      { label: 'Contract', desc: 'Agree referral fee terms' },
-      { label: 'Deal', desc: 'Agent works with your client' },
-      { label: 'Close', desc: 'Deal closes' },
-      { label: 'Get Paid', desc: 'Receive your referral fee' },
+      { label: 'Share', desc: "Post your out-of-area client's needs" },
+      { label: 'Match', desc: 'AI finds a licensed local agent' },
+      { label: 'Accept', desc: 'Agent accepts the referral' },
+      { label: 'Sign', desc: 'Agree the referral fee terms' },
+      { label: 'Work', desc: 'Agent works with your client' },
+      { label: 'Close', desc: 'Deal closes in the new market' },
+      { label: 'Get Paid', desc: 'Receive your referral fee payout' },
     ],
   },
   {
     steps: [
-      { label: 'Share Tip', desc: 'Tell us about the home' },
-      { label: 'Matching', desc: 'We find the right listing agent' },
-      { label: 'Accepted', desc: 'Agent accepts' },
-      { label: 'Contract', desc: 'Agree your cut' },
-      { label: 'List', desc: 'Agent lists the property' },
-      { label: 'Offer', desc: 'Buyer makes an offer' },
+      { label: 'Tip', desc: 'Share the home that is about to sell' },
+      { label: 'Match', desc: 'We find the right listing agent' },
+      { label: 'Accept', desc: 'Agent accepts the lead' },
+      { label: 'Sign', desc: 'Agree your share of the fee' },
+      { label: 'List', desc: 'Agent lists the property on the MLS' },
+      { label: 'Offer', desc: 'A buyer makes an offer' },
       { label: 'Close', desc: 'Deal closes' },
-      { label: 'Get Paid', desc: 'Receive your cut' },
+      { label: 'Get Paid', desc: 'Receive your cut of the fee' },
     ],
   },
   {
     steps: [
-      { label: 'Share Lead', desc: 'Tell us about the buyer' },
-      { label: 'Matching', desc: 'We find the right buyer agent' },
-      { label: 'Accepted', desc: 'Agent accepts' },
-      { label: 'Contract', desc: 'Agree referral fee' },
-      { label: 'Deal', desc: 'Agent works with the buyer' },
+      { label: 'Share', desc: 'Tell us about the buyer you know' },
+      { label: 'Match', desc: 'We find the right buyer agent' },
+      { label: 'Accept', desc: 'Agent accepts the referral' },
+      { label: 'Sign', desc: 'Agree the referral fee terms' },
+      { label: 'Work', desc: 'Agent works with the buyer' },
       { label: 'Close', desc: 'Deal closes' },
-      { label: 'Get Paid', desc: 'Receive your referral fee' },
+      { label: 'Get Paid', desc: 'Receive your referral fee payout' },
     ],
   },
 ];
@@ -208,7 +208,7 @@ export const LoginScreen: React.FC = () => {
                   key={i}
                   onClick={() => setSelectedScenario(i)}
                   className={`flex items-start gap-3 p-3 rounded-xl bg-white border shadow-sm hover:shadow-md transition-all text-left w-full ${
-                    isSelected ? 'border-indigo-400 ring-2 ring-indigo-100' : 'border-slate-100'
+                    isSelected ? 'border-indigo-500 ring-2 ring-indigo-500' : 'border-slate-100'
                   }`}
                 >
                   <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${isSelected ? 'bg-indigo-600 text-white' : 'bg-indigo-50 text-indigo-600'}`}>
@@ -353,6 +353,13 @@ export const LoginScreen: React.FC = () => {
             </h2>
           </div>
           <TimelineBar timelines={TIMELINES} selectedIndex={selectedScenario} />
+          <button
+            onClick={() => { setShowAuth(true); setAuthMode('register'); }}
+            className="mt-4 w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm transition-colors flex items-center justify-center gap-2 shadow-md"
+          >
+            <Sparkles className="w-4 h-4 text-indigo-200" />
+            Find the right people
+          </button>
         </div>
       </div>
     </div>

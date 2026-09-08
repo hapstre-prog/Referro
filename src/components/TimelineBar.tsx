@@ -46,7 +46,7 @@ export const TimelineBar: React.FC<TimelineBarProps> = ({ timelines, selectedInd
               </div>
               {/* Connector line */}
               {i < total - 1 && (
-                <div className="flex items-center pt-4.5" style={{ paddingTop: '18px' }}>
+                <div className="flex items-center flex-1 min-w-[8px]" style={{ paddingTop: '18px' }}>
                   <div className={`h-0.5 w-full rounded-full ${i < paidIndex - 1 ? 'bg-indigo-200' : 'bg-emerald-200'}`} />
                 </div>
               )}
