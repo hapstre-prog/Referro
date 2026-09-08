@@ -126,7 +126,7 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
       : ''
   );
 
-  const [hasSearched, setHasSearched] = useState(isDemoMode);
+  const [hasSearched, setHasSearched] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [searchScope, setSearchScope] = useState<'outside_network' | 'level_1_network'>('outside_network');
   const [displayFilter, setDisplayFilter] = useState<'all' | 'unlocked' | 'locked'>('all');
@@ -145,12 +145,7 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
 
   const resultsRef = useRef<HTMLDivElement>(null);
 
-  // Initial load — only auto-search in demo mode (mock data)
-  useEffect(() => {
-    if (isDemoMode) {
-      executeSearch();
-    }
-  }, []);
+  // Landing page first — user explores journeys before searching
 
   // Clear toast
   useEffect(() => {
@@ -490,6 +485,13 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
         <div ref={resultsRef} className="space-y-4 pt-2">
           {/* Streamlined Results Toolbar */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200/80 shadow-2xs">
+            <button
+              onClick={() => { setHasSearched(false); setQuery(''); }}
+              className="flex items-center space-x-1 text-xs font-semibold text-slate-500 hover:text-slate-700 transition-colors mb-2 sm:mb-0"
+            >
+              <ChevronRight className="w-3.5 h-3.5 rotate-180" />
+              <span>New Search</span>
+            </button>
             <div className="flex items-center space-x-2 text-xs">
               <span className="font-bold text-slate-900">
                 {searchScope === 'outside_network' ? (
