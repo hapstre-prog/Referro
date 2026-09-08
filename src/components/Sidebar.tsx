@@ -26,16 +26,21 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
 
   const navGroups = [
     {
-      groupLabel: 'Core Engine',
+      groupLabel: '',
       items: [
-        { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, activeFor: ['dashboard'] },
         {
           id: 'match-refer',
           label: 'Match & Refer',
           icon: Sparkles,
           badge: 'AI',
           activeFor: ['match-refer', 'give', 'take', 'ai-matches']
-        },
+        }
+      ]
+    },
+    {
+      groupLabel: 'Core Engine',
+      items: [
+        { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, activeFor: ['dashboard'] },
         {
           id: 'deals',
           label: 'Pipeline & Deals',
@@ -111,9 +116,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobileOpen, onMobileClose })
       <nav className="flex-1 px-3 space-y-5 overflow-y-auto py-2">
         {navGroups.map((group, gIdx) => (
           <div key={gIdx} className="space-y-0.5">
-            <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-[#777]">
-              {group.groupLabel}
-            </div>
+            {group.groupLabel && (
+              <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-[#777]">
+                {group.groupLabel}
+              </div>
+            )}
             {group.items.map((item) => {
               const Icon = item.icon;
               const isActive = item.activeFor.includes(activeTab);

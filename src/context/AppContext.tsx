@@ -125,7 +125,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [user, setUser] = useState<UserProfile>(BLANK_USER);
   const [isDemoMode, setIsDemoModeState] = useState<boolean>(false); // Start at login screen; user can enter demo from there
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState<string>('dashboard');
+  const [activeTab, setActiveTab] = useState<string>('match-refer');
   
   // Data lists — empty by default; seed data only loads when demo mode is turned ON
   const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
@@ -671,7 +671,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setIsAuthenticated(false);
     setIsDemoModeState(false);
     setUser(BLANK_USER);
-    setActiveTab('dashboard');
+    setActiveTab('match-refer');
     // Clear all data on logout
     setOpportunities([]);
     setNetworkContacts([]);
