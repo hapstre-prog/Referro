@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { Sparkles, Send, ArrowRight, Bot, ChevronDown, Loader2, Home, MapPin, Hammer, Users } from 'lucide-react';
+import { TimelineBar, TimelineData } from './TimelineBar';
 
 const SUGGESTED_PROMPTS = [
   'My listing has been sitting — how do I find buyer agents?',
@@ -32,6 +33,54 @@ const SCENARIOS = [
   },
 ];
 
+const TIMELINES: TimelineData[] = [
+  {
+    steps: [
+      { label: 'Search', desc: 'Post your listing on Referro' },
+      { label: 'Matching', desc: 'AI finds buyers & buyer agents' },
+      { label: 'Accepted', desc: 'Agent accepts your referral' },
+      { label: 'Contract', desc: 'Agree referral fee with Referro' },
+      { label: 'Offer', desc: 'Buyer makes an offer' },
+      { label: 'Close', desc: 'Deal closes' },
+      { label: 'Get Paid', desc: 'Receive your referral fee' },
+    ],
+  },
+  {
+    steps: [
+      { label: 'Share Lead', desc: "Share your client's needs" },
+      { label: 'Matching', desc: 'AI finds a licensed local agent' },
+      { label: 'Accepted', desc: 'Agent accepts the referral' },
+      { label: 'Contract', desc: 'Agree referral fee terms' },
+      { label: 'Deal', desc: 'Agent works with your client' },
+      { label: 'Close', desc: 'Deal closes' },
+      { label: 'Get Paid', desc: 'Receive your referral fee' },
+    ],
+  },
+  {
+    steps: [
+      { label: 'Share Tip', desc: 'Tell us about the home' },
+      { label: 'Matching', desc: 'We find the right listing agent' },
+      { label: 'Accepted', desc: 'Agent accepts' },
+      { label: 'Contract', desc: 'Agree your cut' },
+      { label: 'List', desc: 'Agent lists the property' },
+      { label: 'Offer', desc: 'Buyer makes an offer' },
+      { label: 'Close', desc: 'Deal closes' },
+      { label: 'Get Paid', desc: 'Receive your cut' },
+    ],
+  },
+  {
+    steps: [
+      { label: 'Share Lead', desc: 'Tell us about the buyer' },
+      { label: 'Matching', desc: 'We find the right buyer agent' },
+      { label: 'Accepted', desc: 'Agent accepts' },
+      { label: 'Contract', desc: 'Agree referral fee' },
+      { label: 'Deal', desc: 'Agent works with the buyer' },
+      { label: 'Close', desc: 'Deal closes' },
+      { label: 'Get Paid', desc: 'Receive your referral fee' },
+    ],
+  },
+];
+
 export const LoginScreen: React.FC = () => {
   const { setDemoMode, loginWithEmail, registerWithEmail, connectLinkedIn } = useApp();
   const [messages, setMessages] = useState<Array<{ role: 'ai' | 'user'; text: string }>>([
@@ -50,6 +99,7 @@ export const LoginScreen: React.FC = () => {
   const [authError, setAuthError] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
   const [linkedinLoading, setLinkedinLoading] = useState(false);
+  const [selectedScenario, setSelectedScenario] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -162,16 +212,23 @@ export const LoginScreen: React.FC = () => {
           <h2 className="text-sm font-bold text-slate-500 uppercase tracking-wide mb-1">How it works</h2>
           {SCENARIOS.map((s, i) => {
             const Icon = s.icon;
+            const isSelected = i === selectedScenario;
             return (
-              <div key={i} className="flex items-start gap-4 p-4 rounded-2xl bg-white border border-slate-100 shadow-sm hover:shadow-md transition-shadow">
-                <div className="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+              <button
+                key={i}
+                onClick={() => setSelectedScenario(i)}
+                className={`flex items-start gap-4 p-4 rounded-2xl bg-white border shadow-sm hover:shadow-md transition-all text-left w-full ${
+                  isSelected ? 'border-indigo-400 ring-2 ring-indigo-100' : 'border-slate-100'
+                }`}
+              >
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${isSelected ? 'bg-indigo-600 text-white' : 'bg-indigo-50 text-indigo-600'}`}>
                   <Icon className="w-5 h-5" />
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-slate-900">{s.title}</h3>
                   <p className="text-xs text-slate-600 leading-relaxed mt-1">{s.desc}</p>
                 </div>
-              </div>
+              </button>
             );
           })}
         </div>
@@ -293,6 +350,19 @@ export const LoginScreen: React.FC = () => {
               </div>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* Timeline: step-by-step journey for the selected scenario */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-8 pb-16">
+        <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-6 sm:p-8">
+          <div className="flex items-center gap-2 mb-5">
+            <h2 className="text-sm font-bold text-slate-900">
+              Your journey: {SCENARIOS[selectedScenario].title}
+            </h2>
+            <span className="text-xs text-slate-400">— tap a scenario above to see its timeline</span>
+          </div>
+          <TimelineBar timelines={TIMELINES} selectedIndex={selectedScenario} />
         </div>
       </div>
     </div>
