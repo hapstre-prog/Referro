@@ -165,9 +165,9 @@ export const LoginScreen: React.FC = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-slate-50 via-indigo-50/40 to-blue-50/30 font-sans antialiased">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 via-indigo-50/40 to-blue-50/30 font-sans antialiased">
       {/* Top bar */}
-      <div className="px-4 sm:px-8 pt-4 flex items-center justify-between shrink-0">
+      <div className="px-6 sm:px-12 pt-6 flex items-center justify-between shrink-0">
         <div className="flex items-center space-x-2.5">
           <div className="w-9 h-9 bg-indigo-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
             <Sparkles className="w-4.5 h-4.5" />
@@ -183,7 +183,7 @@ export const LoginScreen: React.FC = () => {
       </div>
 
       {/* Hero */}
-      <div className="px-4 sm:px-8 pt-3 pb-2 text-center shrink-0">
+      <div className="px-6 sm:px-12 pt-6 pb-4 text-center shrink-0">
         <h1 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight max-w-3xl mx-auto">
           Every real estate connection becomes a{' '}
           <span className="text-indigo-600">paid opportunity</span>.
@@ -194,12 +194,12 @@ export const LoginScreen: React.FC = () => {
       </div>
 
       {/* Main grid: scenarios + AI chat */}
-      <div className="flex-1 min-h-0 max-w-6xl w-full mx-auto px-4 sm:px-8 py-3 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 overflow-hidden">
+      <div className="flex-1 min-h-0 max-w-6xl w-full mx-auto px-6 sm:px-12 py-6 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
 
         {/* Left: 4 scenarios */}
         <div className="flex flex-col min-h-0 overflow-y-auto">
-          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2 shrink-0">How it works — click to see your journey</h2>
-          <div className="space-y-2">
+          <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3 shrink-0">How it works — click to see your journey</h2>
+          <div className="space-y-3">
             {SCENARIOS.map((s, i) => {
               const Icon = s.icon;
               const isSelected = i === selectedScenario;
@@ -207,7 +207,7 @@ export const LoginScreen: React.FC = () => {
                 <button
                   key={i}
                   onClick={() => setSelectedScenario(i)}
-                  className={`flex items-start gap-3 p-3 rounded-xl bg-white border shadow-sm hover:shadow-md transition-all text-left w-full ${
+                  className={`flex items-start gap-3 p-4 rounded-xl bg-white border shadow-sm hover:shadow-md transition-all text-left w-full ${
                     isSelected ? 'border-indigo-500 ring-2 ring-indigo-500' : 'border-slate-100'
                   }`}
                 >
@@ -345,8 +345,8 @@ export const LoginScreen: React.FC = () => {
       </div>
 
       {/* Timeline: step-by-step journey for the selected scenario */}
-      <div className="max-w-6xl mx-auto w-full px-4 sm:px-8 pb-4 shrink-0">
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-4">
+      <div className="max-w-6xl mx-auto w-full px-6 sm:px-12 pb-8 shrink-0">
+        <div className="bg-white rounded-2xl shadow-lg border border-slate-100 p-5">
           <div className="flex items-center gap-2 mb-3">
             <h2 className="text-sm font-bold text-slate-900">
               Your journey: {SCENARIOS[selectedScenario].title}

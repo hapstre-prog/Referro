@@ -12,6 +12,7 @@ import { LinkedInConnectModal } from './components/LinkedInConnectModal';
 import { LinkedInSyncModal } from './components/LinkedInSyncModal';
 import { AuthCallback } from './components/AuthCallback';
 import { LoginScreen } from './components/LoginScreen';
+import { LandingSlider } from './components/LandingSlider';
 
 // Views
 import { DashboardView } from './views/DashboardView';
@@ -33,11 +34,11 @@ const AppContent: React.FC = () => {
   const { activeTab, isAuthenticated, isDemoMode } = useApp();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Show login screen when not authenticated and not in demo mode
+  // Show landing slider (landing page + dashboard preview) when not authenticated and not in demo mode
   if (!isAuthenticated && !isDemoMode) {
     return (
       <>
-        <LoginScreen />
+        <LandingSlider />
         <AuthCallback />
       </>
     );
