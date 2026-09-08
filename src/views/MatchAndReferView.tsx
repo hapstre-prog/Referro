@@ -333,11 +333,11 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
           <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
           <span>Natural Language Real Estate Match</span>
         </div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">
-          Find Any Agent, Listing, or Referral Partner
+        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-3" style={{ color: '#1a1b26' }}>
+          Every real estate connection becomes a <span style={{ color: '#5d5fef' }}>paid opportunity.</span>
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 max-w-xl mx-auto mb-7 leading-relaxed">
-          Type your client, relocation, or listing in plain English. Referro AI searches outperforming agents outside your network with verified buyer demand.
+        <p className="text-xs sm:text-sm max-w-xl mx-auto mb-7 leading-relaxed" style={{ color: '#4a4f63' }}>
+          Referro connects agents, contractors, and everyday people — anyone who knows about a deal — with the right professional to close it. You get paid when the deal closes.
         </p>
 
         {/* The Pure Google-Style Search Bar */}
