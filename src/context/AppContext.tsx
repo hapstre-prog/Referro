@@ -150,7 +150,38 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       ...prev,
       isDemoUnlimited: val
     }));
-    if (!val) {
+
+    if (val) {
+      // Entering demo mode: restore all seed/mockup data
+      setOpportunities(SEED_OPPORTUNITIES);
+      setNetworkContacts(SEED_NETWORK_CONTACTS);
+      setReferrals(SEED_REFERRALS);
+      setDeals(SEED_DEALS);
+      setMessages(SEED_MESSAGES);
+      setNotifications(SEED_NOTIFICATIONS);
+      setTransactions(INITIAL_TRANSACTIONS);
+      setAnalytics(SEED_FUNNEL_ANALYTICS);
+      setUser(DEMO_USER);
+    } else {
+      // Leaving demo mode: clear all mockup data for a clean production slate
+      setOpportunities([]);
+      setNetworkContacts([]);
+      setReferrals([]);
+      setDeals([]);
+      setMessages([]);
+      setNotifications([]);
+      setTransactions([]);
+      setAnalytics({
+        signups: 0, totalUsersSignedUp: 0, freeCreditsGranted: 0,
+        firstNetworkSearches: 0, firstBeyondSearches: 0,
+        freeCreditsConsumed: 0, creditsExhausted: 0,
+        creditPurchases: 0, repeatPurchases: 0,
+        freeToPaidRate: 0, creditUtilizationRate: 0,
+        searchToMatchRate: 0, matchToIntroRate: 0,
+        introToDealRate: 0, dealToCloseRate: 0,
+        totalCreditsPurchased: 0, creditRevenueDollars: 0,
+        totalDealVolumeGMV: 0, totalPlatformSuccessFees: 0
+      });
       // In production mode, prompt welcome if first time
       setIsFirstTimeWelcomeOpen(true);
     }

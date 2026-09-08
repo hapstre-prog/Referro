@@ -77,7 +77,8 @@ export const DashboardView: React.FC = () => {
             </div>
           </div>
 
-          {/* Interactive Demo Scenarios Carousel */}
+          {/* Interactive Demo Scenarios Carousel — demo mode only */}
+          {isDemoMode && (
           <div className="mt-6 pt-5 border-t border-slate-700/80">
             <div className="flex items-center justify-between mb-3">
               <span className="text-xs font-bold uppercase tracking-wider text-amber-300 flex items-center">
@@ -137,6 +138,7 @@ export const DashboardView: React.FC = () => {
               </div>
             </div>
           </div>
+          )}
         </div>
       </div>
 
@@ -241,7 +243,14 @@ export const DashboardView: React.FC = () => {
           </div>
 
           <div className="space-y-3">
-            {deals.map((deal) => (
+            {deals.length === 0 ? (
+              <div className="py-10 text-center">
+                <Kanban className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                <p className="text-sm text-slate-400 font-medium">No deals in your pipeline yet.</p>
+                <p className="text-xs text-slate-400 mt-1">Post a lead or accept a referral to get started.</p>
+              </div>
+            ) : (
+            deals.map((deal) => (
               <div 
                 key={deal.id}
                 onClick={() => setActiveTab('deals')}
@@ -280,7 +289,8 @@ export const DashboardView: React.FC = () => {
                   </div>
                 </div>
               </div>
-            ))}
+            ))
+            )}
           </div>
         </div>
 
@@ -299,7 +309,14 @@ export const DashboardView: React.FC = () => {
             </div>
 
             <div className="space-y-3">
-              {opportunities.slice(0, 3).map((opp) => (
+              {opportunities.length === 0 ? (
+                <div className="py-8 text-center">
+                  <Compass className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                  <p className="text-sm text-slate-400 font-medium">No opportunities yet.</p>
+                  <p className="text-xs text-slate-400 mt-1">Post your first lead to start receiving referrals.</p>
+                </div>
+              ) : (
+              opportunities.slice(0, 3).map((opp) => (
                 <div 
                   key={opp.id} 
                   onClick={() => setActiveTab(opp.type === 'give' ? 'give' : 'take')}
@@ -319,7 +336,8 @@ export const DashboardView: React.FC = () => {
                     <span className="font-semibold text-indigo-600">{opp.referralTermsPct}% fee</span>
                   </div>
                 </div>
-              ))}
+              ))
+              )}
             </div>
           </div>
 

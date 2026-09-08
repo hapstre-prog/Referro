@@ -150,7 +150,14 @@ export const EarningsView: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {deals.map((deal) => (
+              {deals.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-10 text-center text-sm text-slate-400">
+                    No transaction settlements yet. Your closed referral deals will appear here.
+                  </td>
+                </tr>
+              ) : (
+              deals.map((deal) => (
                 <tr key={deal.id} className="hover:bg-slate-50/80 transition-colors">
                   <td className="py-3 px-3">
                     <strong className="text-slate-900 block">{deal.propertyAddress}</strong>
@@ -181,7 +188,8 @@ export const EarningsView: React.FC = () => {
                     +${deal.giverPayoutAmount.toLocaleString()}
                   </td>
                 </tr>
-              ))}
+              ))
+              )}
             </tbody>
           </table>
         </div>
