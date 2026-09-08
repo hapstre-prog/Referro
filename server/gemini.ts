@@ -49,7 +49,7 @@ async function callGeminiWithFallback(
     config?: any;
   }
 ) {
-  const candidateModels = ['gemini-3.8-flash', 'gemini-flash-latest'];
+  const candidateModels = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash'];
 
   for (const model of candidateModels) {
     try {
@@ -58,13 +58,13 @@ async function callGeminiWithFallback(
           model,
           ...requestParams
         }),
-        5000
+        15000
       );
       if (response && response.text) {
         return response;
       }
-    } catch {
-      // Continue to next model on 503, rate limit, timeout or error
+    } catch (err: any) {
+      console.error(`[Gemini Service] Model ${model} failed:`, err?.message || err);
       continue;
     }
   }
@@ -236,7 +236,36 @@ Provide concise, highly actionable, strategic advice (under 120 words).`,
     // Non-blocking fallback
   }
 
-  return "I can assist you in matching the right agent, drafting introduction letters, or tracking your referral payouts. Let me know what you'd like to focus on.";
+  return contextualChatFallback(prompt);
+}
+
+// Contextual fallback for the chat assistant when Gemini is unavailable
+function contextualChatFallback(prompt: string): string {
+  const lower = prompt.toLowerCase();
+
+  if (lower.includes('miami')) {
+    return "For Miami, I'd match you with agents specializing in luxury relocations — particularly those with proven track records in Coconut Grove, Brickell, and Coral Gables. Referro's network includes verified agents who average $4M+ in closed luxury volume. A standard 25% referral fee applies. Click 'Start to find the right people' to browse your network for Miami specialists — it's always free.";
+  }
+  if (lower.includes('referral fee') || lower.includes('fee split') || lower.includes('commission')) {
+    return "A standard referral fee in luxury real estate is 25% of the gross commission, paid at closing. Some markets and price points may justify 30-35% for high-value leads. Referro tracks and protects these agreements automatically. You can negotiate terms directly with your matched agent within the platform.";
+  }
+  if (lower.includes('match') || lower.includes('right agent') || lower.includes('find the right')) {
+    return "Referro uses AI-powered matching that considers market expertise, price band experience, response rate, and verified deal history. When you post an opportunity, we score every agent in your network against your criteria and surface the top matches. Try the 'Start to find the right people' button — searching your network is always free with no credit cost.";
+  }
+  if (lower.includes('free') || lower.includes('credit') || lower.includes('cost') || lower.includes('price')) {
+    return "Searching your own network on Referro is always free — no credits consumed, no limits. Credits are only used for 'Beyond Network' AI searches that find agents outside your current connections. You start with 5 free credits for those searches. Click 'Start to find the right people' to explore your network now.";
+  }
+  if (lower.includes('linkedin') || lower.includes('sync') || lower.includes('connect')) {
+    return "You can sync your LinkedIn connections to instantly build your Referro network. Once connected, you'll see which of your contacts are verified real estate professionals and can start sending referrals immediately. Sign up and click 'Continue with LinkedIn' to get started.";
+  }
+  if (lower.includes('introduc') || lower.includes('draft') || lower.includes('message')) {
+    return "I can draft a warm introduction message for you. When you match with an agent, Referro generates a personalized intro highlighting why they were selected, the opportunity details, and the agreed referral terms. You can review and send it directly from the platform.";
+  }
+  if (lower.includes('how') && (lower.includes('referro') || lower.includes('work') || lower.includes('platform'))) {
+    return "Referro works in three steps: 1) Sync your LinkedIn network to see your existing connections. 2) Post referral opportunities (give or take). 3) Our AI matches you with the best agents and helps you manage the referral through to closing. Searching your network is always free — try it now with the button on the left.";
+  }
+
+  return "I can help you find the right referral agent, structure fee agreements, draft introductions, or explain how Referro works. Try asking about a specific market like Miami, or about referral fees and matching. You can also click 'Start to find the right people' to explore your network — it's always free.";
 }
 
 // Intelligent heuristic fallback for offline, demo, and temporary high-demand reliability
