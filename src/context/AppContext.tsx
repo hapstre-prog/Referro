@@ -67,6 +67,13 @@ interface AppContextType {
   isAiAssistantOpen: boolean;
   setIsAiAssistantOpen: (open: boolean) => void;
   
+  // LinkedIn Auth
+  isLinkedInConnected: boolean;
+  isLinkedInConnectOpen: boolean;
+  setIsLinkedInConnectOpen: (open: boolean) => void;
+  connectLinkedIn: () => Promise<void>;
+  handleLinkedInCallback: (profile: any) => Promise<void>;
+  
   // Handlers
   consumeSearchCredit: (type: 'my_network' | 'beyond_network', onSuccess: () => void) => boolean;
   promptBeyondNetworkSearch: (actionTitle: string, onConfirm: () => void) => void;
@@ -116,6 +123,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     onConfirm: () => void;
   } | null>(null);
   const [isAiAssistantOpen, setIsAiAssistantOpen] = useState<boolean>(false);
+
+  // LinkedIn Auth State
+  const [isLinkedInConnected, setIsLinkedInConnected] = useState<boolean>(false);
+  const [isLinkedInConnectOpen, setIsLinkedInConnectOpen] = useState<boolean>(false);
 
   // Load backend data if available
   useEffect(() => {
@@ -545,6 +556,54 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setMessages(prev => [...prev, msg]);
   };
 
+  // LinkedIn OAuth: redirect user to LinkedIn authorization page
+  const connectLinkedIn = async () => {
+    try {
+      const res = await fetch('/api/auth/linkedin/url');
+      const data = await res.json();
+      if (data.authUrl) {
+        window.location.href = data.authUrl;
+      }
+    } catch (err) {
+      console.error('Failed to get LinkedIn auth URL:', err);
+      setIsLinkedInConnectOpen(false);
+    }
+  };
+
+  // LinkedIn OAuth: process the returned profile and update user state
+  const handleLinkedInCallback = async (profile: any) => {
+    setIsLinkedInConnected(true);
+    setIsLinkedInConnectOpen(false);
+    setIsDemoModeState(false);
+    setWallet(prev => ({ ...prev, isDemoUnlimited: false }));
+
+    // Update user profile with LinkedIn data, preserving demo data as fallbacks
+    setUser(prev => ({
+      ...prev,
+      id: profile.id || prev.id,
+      name: profile.name || prev.name,
+      email: profile.email || prev.email,
+      avatarUrl: profile.avatarUrl || prev.avatarUrl,
+      title: profile.headline || prev.title,
+      isVerified: true,
+      complianceStatus: 'verified'
+    }));
+
+    setNotifications(n => [
+      {
+        id: `notif_li_${Date.now()}`,
+        userId: profile.id || user.id,
+        title: 'LinkedIn Connected!',
+        message: 'Your profile is verified. Your network is now powering smarter referral matches.',
+        type: 'intro',
+        timestamp: 'Just now',
+        read: false,
+        actionUrl: 'my-network'
+      },
+      ...n
+    ]);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -572,6 +631,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setConsumptionConfirmation,
         isAiAssistantOpen,
         setIsAiAssistantOpen,
+        isLinkedInConnected,
+        isLinkedInConnectOpen,
+        setIsLinkedInConnectOpen,
+        connectLinkedIn,
+        handleLinkedInCallback,
         consumeSearchCredit,
         promptBeyondNetworkSearch,
         purchasePackage,

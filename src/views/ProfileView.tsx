@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 export const ProfileView: React.FC = () => {
-  const { user, deals, wallet, opportunities, isDemoMode, setActiveTab } = useApp();
+  const { user, deals, wallet, opportunities, isDemoMode, setActiveTab, isLinkedInConnected, setIsLinkedInConnectOpen } = useApp();
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto pb-10">
@@ -113,9 +113,22 @@ export const ProfileView: React.FC = () => {
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">
             <div>
               <strong className="text-xs font-bold text-slate-900 block">LinkedIn Profile</strong>
-              <span className="text-[11px] text-emerald-600 font-semibold">Connected (OAuth Verified)</span>
+              {isLinkedInConnected ? (
+                <span className="text-[11px] text-emerald-600 font-semibold">Connected (OAuth Verified)</span>
+              ) : (
+                <button
+                  onClick={() => setIsLinkedInConnectOpen(true)}
+                  className="text-[11px] text-[#0A66C2] font-semibold hover:underline"
+                >
+                  Connect to verify →
+                </button>
+              )}
             </div>
-            <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+            {isLinkedInConnected ? (
+              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+            ) : (
+              <div className="w-5 h-5 rounded-full border-2 border-slate-300" />
+            )}
           </div>
 
           <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200/80 flex items-center justify-between">

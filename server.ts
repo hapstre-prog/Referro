@@ -71,6 +71,83 @@ async function startServer() {
     res.json({ success: true, user: DEMO_USER, mode: 'demo' });
   });
 
+  // LinkedIn OAuth callback: exchange code for token, fetch profile
+  app.post('/api/auth/linkedin/callback', async (req, res) => {
+    const { code } = req.body;
+    if (!code) {
+      return res.status(400).json({ error: 'Missing authorization code' });
+    }
+
+    const clientId = process.env.LINKEDIN_CLIENT_ID;
+    const clientSecret = process.env.LINKEDIN_CLIENT_SECRET;
+    const redirectUri = `${process.env.APP_URL || 'http://localhost:3000'}/auth/callback`;
+
+    // If LinkedIn credentials aren't configured, return a structured mock profile
+    if (!clientId || !clientSecret) {
+      return res.json({
+        success: true,
+        profile: {
+          id: 'li_demo_user',
+          name: 'LinkedIn Demo User',
+          email: 'demo@linkedin.com',
+          avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
+          headline: 'Real Estate Professional',
+          configured: false
+        }
+      });
+    }
+
+    try {
+      // Step 1: Exchange authorization code for access token
+      const tokenResponse = await fetch('https://www.linkedin.com/oauth/v2/accessToken', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          grant_type: 'authorization_code',
+          code,
+          client_id: clientId,
+          client_secret: clientSecret,
+          redirect_uri: redirectUri
+        })
+      });
+
+      if (!tokenResponse.ok) {
+        const errText = await tokenResponse.text();
+        console.error('LinkedIn token exchange failed:', errText);
+        return res.status(400).json({ error: 'Failed to exchange authorization code for token' });
+      }
+
+      const tokenData = await tokenResponse.json() as any;
+
+      // Step 2: Fetch user profile via OpenID Connect userinfo endpoint
+      const profileResponse = await fetch('https://api.linkedin.com/v2/userinfo', {
+        headers: { Authorization: `Bearer ${tokenData.access_token}` }
+      });
+
+      if (!profileResponse.ok) {
+        console.error('LinkedIn profile fetch failed:', await profileResponse.text());
+        return res.status(400).json({ error: 'Failed to fetch LinkedIn profile' });
+      }
+
+      const profile = await profileResponse.json() as any;
+
+      res.json({
+        success: true,
+        profile: {
+          id: profile.sub,
+          name: profile.name || `${profile.given_name || ''} ${profile.family_name || ''}`.trim(),
+          email: profile.email,
+          avatarUrl: profile.picture,
+          headline: profile.headline || '',
+          configured: true
+        }
+      });
+    } catch (err: any) {
+      console.error('LinkedIn OAuth error:', err.message);
+      res.status(500).json({ error: 'LinkedIn authentication failed' });
+    }
+  });
+
   // ----------------------------------------------------
   // API: Credits & Freemium Wallet (Requirement #1 - #15)
   // ----------------------------------------------------

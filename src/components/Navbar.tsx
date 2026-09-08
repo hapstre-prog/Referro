@@ -10,7 +10,8 @@ import {
   Check, 
   Layers, 
   Menu,
-  ChevronDown
+  ChevronDown,
+  Linkedin
 } from 'lucide-react';
 
 export const Navbar: React.FC<{ onMobileMenuToggle?: () => void }> = ({ onMobileMenuToggle }) => {
@@ -23,7 +24,9 @@ export const Navbar: React.FC<{ onMobileMenuToggle?: () => void }> = ({ onMobile
     markNotificationAsRead, 
     setActiveTab,
     isAiAssistantOpen,
-    setIsAiAssistantOpen 
+    setIsAiAssistantOpen,
+    isLinkedInConnected,
+    setIsLinkedInConnectOpen
   } = useApp();
 
   const [isNotifsOpen, setIsNotifsOpen] = useState(false);
@@ -99,6 +102,18 @@ export const Navbar: React.FC<{ onMobileMenuToggle?: () => void }> = ({ onMobile
           <Sparkles className="w-3.5 h-3.5 text-amber-300" />
           <span>{isDemoMode ? 'DEMO ACTIVE' : 'TRY DEMO'}</span>
         </button>
+
+        {/* LinkedIn Connect Button — shown when not yet connected */}
+        {!isLinkedInConnected && (
+          <button
+            onClick={() => setIsLinkedInConnectOpen(true)}
+            className="hidden sm:flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-[#0A66C2]/20 hover:bg-[#0A66C2]/5 text-[#0A66C2] transition-colors text-xs font-semibold"
+            title="Connect your LinkedIn profile for better referral matching"
+          >
+            <Linkedin className="w-3.5 h-3.5" />
+            <span>Connect LinkedIn</span>
+          </button>
+        )}
 
         {/* Referral AI Drawer Trigger (Section #18) */}
         <button

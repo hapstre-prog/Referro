@@ -1,9 +1,9 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { Sparkles, Users, Search, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Sparkles, Users, Search, ArrowRight, CheckCircle2, Linkedin } from 'lucide-react';
 
 export const WelcomeModal: React.FC = () => {
-  const { isFirstTimeWelcomeOpen, setIsFirstTimeWelcomeOpen, adminConfig, setActiveTab } = useApp();
+  const { isFirstTimeWelcomeOpen, setIsFirstTimeWelcomeOpen, adminConfig, setActiveTab, isLinkedInConnected, setIsLinkedInConnectOpen } = useApp();
 
   if (!isFirstTimeWelcomeOpen) return null;
 
@@ -71,6 +71,19 @@ export const WelcomeModal: React.FC = () => {
             <span>Explore My Network</span>
           </button>
         </div>
+
+        {!isLinkedInConnected && (
+          <button
+            onClick={() => {
+              setIsFirstTimeWelcomeOpen(false);
+              setIsLinkedInConnectOpen(true);
+            }}
+            className="w-full mt-3 py-2.5 px-4 rounded-xl border border-[#0A66C2]/20 hover:bg-[#0A66C2]/5 text-[#0A66C2] font-semibold text-sm transition-colors flex items-center justify-center space-x-2"
+          >
+            <Linkedin className="w-4 h-4" />
+            <span>Connect LinkedIn for better matches</span>
+          </button>
+        )}
       </div>
     </div>
   );

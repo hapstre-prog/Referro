@@ -1,11 +1,16 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
-import { Sparkles, ArrowRight, ShieldCheck, HelpCircle } from 'lucide-react';
+import { Sparkles, ArrowRight, ShieldCheck, HelpCircle, Linkedin } from 'lucide-react';
 
 export const DemoBanner: React.FC = () => {
-  const { isDemoMode, setDemoMode, runDemoScenario } = useApp();
+  const { isDemoMode, setDemoMode, runDemoScenario, setIsLinkedInConnectOpen } = useApp();
 
   if (!isDemoMode) return null;
+
+  const handleExitDemo = () => {
+    // Offer LinkedIn connection when leaving demo — but don't force it
+    setIsLinkedInConnectOpen(true);
+  };
 
   return (
     <div id="demo-mode-persistent-banner" className="bg-gradient-to-r from-amber-600 via-amber-700 to-amber-800 text-amber-50 px-4 py-2 text-xs md:text-sm font-medium flex flex-wrap items-center justify-between shadow-sm z-50 sticky top-0">
@@ -49,10 +54,11 @@ export const DemoBanner: React.FC = () => {
         </div>
 
         <button
-          onClick={() => setDemoMode(false)}
+          onClick={handleExitDemo}
           className="inline-flex items-center px-2.5 py-1 rounded bg-white text-slate-900 font-semibold text-xs hover:bg-amber-50 transition-colors shadow-xs"
         >
-          <span>EXIT DEMO</span>
+          <Linkedin className="w-3 h-3 mr-1 text-[#0A66C2]" />
+          <span>CONNECT & START</span>
           <ArrowRight className="w-3 h-3 ml-1" />
         </button>
       </div>
