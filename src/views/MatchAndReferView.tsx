@@ -351,27 +351,6 @@ export const MatchAndReferView: React.FC<MatchAndReferViewProps> = ({ initialMod
         </div>
       )}
 
-      {/* TOP: Wallet Mini Header */}
-      <div className="flex items-center justify-between px-1">
-        <div className="flex items-center space-x-2 text-xs font-semibold text-slate-500">
-          <div className="w-2 h-2 rounded-full bg-emerald-500" />
-          <span>AI Referral Match Engine</span>
-        </div>
-        <div className="flex items-center space-x-2">
-          <span className="text-xs font-medium text-slate-500">Wallet:</span>
-          <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center space-x-1">
-            <Coins className="w-3.5 h-3.5 text-indigo-600" />
-            <span>{isDemoMode ? 'Unlimited' : `${wallet.availableCredits} Credits`}</span>
-          </span>
-          <button
-            onClick={() => setActiveTab('credits')}
-            className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors ml-1"
-          >
-            + Add Credits
-          </button>
-        </div>
-      </div>
-
       {/* GOOGLE-STYLE MINIMALIST SEARCH HERO */}
       <div className="bg-white rounded-3xl border border-slate-200/90 p-8 sm:p-10 shadow-sm text-center">
         {/* Title */}
