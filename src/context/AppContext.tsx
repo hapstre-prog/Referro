@@ -692,22 +692,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         // Real LinkedIn OAuth: redirect to LinkedIn authorization page
         window.location.href = data.authUrl;
       } else {
-        // LinkedIn not fully configured (missing client secret) — use mock profile flow
-        const cbRes = await fetch('/api/auth/linkedin/callback', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: 'mock_auth_code' })
-        });
-        const cbData = await cbRes.json();
-        if (cbData.success && cbData.profile) {
-          await handleLinkedInCallback(cbData.profile);
-        } else {
-          throw new Error(cbData.error || 'LinkedIn authentication failed.');
-        }
+        throw new Error('LinkedIn is not configured. Please add your LinkedIn credentials to use this feature.');
       }
     } catch (err) {
       console.error('Failed to get LinkedIn auth URL:', err);
       setIsLinkedInConnectOpen(false);
+      alert(err instanceof Error ? err.message : 'Failed to connect to LinkedIn.');
     }
   };
 

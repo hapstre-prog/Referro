@@ -68,9 +68,9 @@ export const LinkedInSyncModal: React.FC = () => {
             </p>
 
             {!isLinkedInConnected && (
-              <div className="flex items-center gap-2 p-3 mb-5 rounded-xl bg-blue-50 border border-blue-100 text-blue-700 text-sm">
+              <div className="flex items-center gap-2 p-3 mb-5 rounded-xl bg-amber-50 border border-amber-100 text-amber-700 text-sm">
                 <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>LinkedIn not connected — sample connections will be imported for demonstration. Connect LinkedIn from the navbar for your real network.</span>
+                <span>LinkedIn is not connected. Please connect your LinkedIn account from the navbar first to sync your real connections.</span>
               </div>
             )}
 

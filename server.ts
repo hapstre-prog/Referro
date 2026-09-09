@@ -151,22 +151,12 @@ async function startServer() {
     const clientSecret = process.env.LINKEDIN_CLIENT_SECRET;
     const redirectUri = `${process.env.APP_URL || 'http://localhost:3000'}/auth/callback`;
 
-    // Mock profile used when LinkedIn isn't fully configured or token exchange fails
-    const mockProfile = {
-      success: true,
-      profile: {
-        id: 'li_demo_user',
-        name: 'LinkedIn Demo User',
-        email: 'demo@linkedin.com',
-        avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
-        headline: 'Real Estate Professional',
-        configured: false
-      }
-    };
-
-    // If LinkedIn credentials aren't configured, return mock profile
+    // If LinkedIn credentials aren't configured, return an error
     if (!clientId || !clientSecret) {
-      return res.json(mockProfile);
+      return res.status(400).json({
+        error: 'LinkedIn is not configured. Please add your LinkedIn credentials.',
+        configured: false
+      });
     }
 
     try {
@@ -186,8 +176,10 @@ async function startServer() {
       if (!tokenResponse.ok) {
         const errText = await tokenResponse.text();
         console.error('LinkedIn token exchange failed:', errText);
-        // Gracefully fall back to mock profile instead of erroring
-        return res.json(mockProfile);
+        return res.status(400).json({
+          error: 'LinkedIn authorization failed. Please try connecting again.',
+          configured: true
+        });
       }
 
       const tokenData = await tokenResponse.json() as any;
@@ -202,7 +194,10 @@ async function startServer() {
 
       if (!profileResponse.ok) {
         console.error('LinkedIn profile fetch failed:', await profileResponse.text());
-        return res.json(mockProfile);
+        return res.status(400).json({
+          error: 'Failed to fetch your LinkedIn profile. Please try again.',
+          configured: true
+        });
       }
 
       const profile = await profileResponse.json() as any;
@@ -220,8 +215,10 @@ async function startServer() {
       });
     } catch (err: any) {
       console.error('LinkedIn OAuth error:', err.message);
-      // Gracefully fall back to mock profile on any unexpected error
-      res.json(mockProfile);
+      res.status(500).json({
+        error: 'An unexpected error occurred during LinkedIn authentication.',
+        configured: true
+      });
     }
   });
 
@@ -234,19 +231,12 @@ async function startServer() {
   let syncedNetworkContacts: typeof SEED_NETWORK_CONTACTS = [];
 
   app.get('/api/linkedin/connections', async (req, res) => {
-    // If no token or credentials, return mock connections for demo
+    // Require a real LinkedIn access token — no mock fallback
     if (!linkedinAccessToken || !process.env.LINKEDIN_CLIENT_ID) {
-      const mockConnections = [
-        { id: 'li_1', name: 'Sarah Chen', title: 'Luxury Real Estate Agent', company: 'Compass', location: 'Miami, FL', industry: 'Real Estate', avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=Sarah+Chen' },
-        { id: 'li_2', name: 'Marcus Johnson', title: 'Senior Real Estate Broker', company: 'Sotheby\'s International Realty', location: 'New York, NY', industry: 'Real Estate', avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=Marcus+Johnson' },
-        { id: 'li_3', name: 'Elena Rodriguez', title: 'Real Estate Agent', company: 'Douglas Elliman', location: 'Austin, TX', industry: 'Real Estate', avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=Elena+Rodriguez' },
-        { id: 'li_4', name: 'David Kim', title: 'Commercial Real Estate Broker', company: 'CBRE', location: 'San Francisco, CA', industry: 'Real Estate', avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=David+Kim' },
-        { id: 'li_5', name: 'Priya Patel', title: 'Real Estate Consultant', company: 'Keller Williams', location: 'Aspen, CO', industry: 'Real Estate', avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=Priya+Patel' },
-        { id: 'li_6', name: 'James Wilson', title: 'Luxury Property Specialist', company: 'Christie\'s International', location: 'Los Angeles, CA', industry: 'Real Estate', avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=James+Wilson' },
-        { id: 'li_7', name: 'Aisha Mohammed', title: 'Real Estate Broker', company: 'Redfin', location: 'Seattle, WA', industry: 'Real Estate', avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=Aisha+Mohammed' },
-        { id: 'li_8', name: 'Robert Garcia', title: 'Residential Real Estate Agent', company: 'eXp Realty', location: 'Phoenix, AZ', industry: 'Real Estate', avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=Robert+Garcia' },
-      ];
-      return res.json({ connections: mockConnections, configured: false, count: mockConnections.length });
+      return res.status(400).json({
+        error: 'LinkedIn is not connected. Please connect your LinkedIn account first.',
+        configured: false,
+      });
     }
 
     try {
@@ -288,22 +278,23 @@ async function startServer() {
   });
 
   app.post('/api/linkedin/sync', async (req, res) => {
-    // If no real connections stored, use mock data
-    const sourceConnections = linkedinConnections.length > 0
-      ? linkedinConnections
-      : [
-        { id: 'li_1', name: 'Sarah Chen', title: 'Luxury Real Estate Agent', company: 'Compass', location: 'Miami, FL', industry: 'Real Estate', avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=Sarah+Chen' },
-        { id: 'li_2', name: 'Marcus Johnson', title: 'Senior Real Estate Broker', company: 'Sotheby\'s International Realty', location: 'New York, NY', industry: 'Real Estate', avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=Marcus+Johnson' },
-        { id: 'li_3', name: 'Elena Rodriguez', title: 'Real Estate Agent', company: 'Douglas Elliman', location: 'Austin, TX', industry: 'Real Estate', avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=Elena+Rodriguez' },
-        { id: 'li_4', name: 'David Kim', title: 'Commercial Real Estate Broker', company: 'CBRE', location: 'San Francisco, CA', industry: 'Real Estate', avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=David+Kim' },
-        { id: 'li_5', name: 'Priya Patel', title: 'Real Estate Consultant', company: 'Keller Williams', location: 'Aspen, CO', industry: 'Real Estate', avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=Priya+Patel' },
-        { id: 'li_6', name: 'James Wilson', title: 'Luxury Property Specialist', company: 'Christie\'s International', location: 'Los Angeles, CA', industry: 'Real Estate', avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=James+Wilson' },
-        { id: 'li_7', name: 'Aisha Mohammed', title: 'Real Estate Broker', company: 'Redfin', location: 'Seattle, WA', industry: 'Real Estate', avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=Aisha+Mohammed' },
-        { id: 'li_8', name: 'Robert Garcia', title: 'Residential Real Estate Agent', company: 'eXp Realty', location: 'Phoenix, AZ', industry: 'Real Estate', avatarUrl: 'https://api.dicebear.com/7.x/initials/svg?seed=Robert+Garcia' },
-      ];
+    // Require a real LinkedIn access token — no mock fallback
+    if (!linkedinAccessToken || !process.env.LINKEDIN_CLIENT_ID) {
+      return res.status(400).json({
+        error: 'LinkedIn is not connected. Please connect your LinkedIn account first via the navbar.',
+        configured: false,
+      });
+    }
 
-    // Map LinkedIn connections to NetworkContact format
-    const importedContacts = sourceConnections.map((c: any) => {
+    if (linkedinConnections.length === 0) {
+      return res.status(400).json({
+        error: 'No LinkedIn connections found. Ensure your LinkedIn app has the r_connections scope approved.',
+        configured: true,
+      });
+    }
+
+    // Map real LinkedIn connections to NetworkContact format
+    const importedContacts = linkedinConnections.map((c: any) => {
       const cityMatch = c.location?.match(/^([^,]+)/);
       const city = cityMatch ? cityMatch[1].trim() : c.location || 'Unknown';
       return {
@@ -327,17 +318,17 @@ async function startServer() {
       };
     });
 
-    // Merge with existing seed contacts, avoiding duplicates by name
-    const existingNames = new Set(SEED_NETWORK_CONTACTS.map(c => c.name));
+    // Avoid duplicates with already-synced contacts
+    const existingNames = new Set(syncedNetworkContacts.map(c => c.name));
     const newContacts = importedContacts.filter(c => !existingNames.has(c.name));
-    syncedNetworkContacts = [...newContacts, ...SEED_NETWORK_CONTACTS];
+    syncedNetworkContacts = [...newContacts, ...syncedNetworkContacts];
 
     res.json({
       success: true,
       imported: newContacts.length,
       total: syncedNetworkContacts.length,
       contacts: newContacts,
-      configured: Boolean(linkedinAccessToken && process.env.LINKEDIN_CLIENT_ID),
+      configured: true,
     });
   });
 
