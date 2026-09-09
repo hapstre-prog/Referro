@@ -41,6 +41,33 @@ async function startServer() {
   app.use(express.json());
 
   // ----------------------------------------------------
+  // API: User Feedback
+  // ----------------------------------------------------
+  const feedbackStore: Array<{ id: string; type: string; message: string; userName: string; userEmail: string; timestamp: string }> = [];
+
+  app.post('/api/feedback', (req, res) => {
+    const { type, message, userName, userEmail } = req.body;
+    if (!message || !message.trim()) {
+      return res.status(400).json({ error: 'Feedback message is required.' });
+    }
+    const entry = {
+      id: `fb_${Date.now()}`,
+      type: type || 'other',
+      message: message.trim(),
+      userName: userName || 'Anonymous',
+      userEmail: userEmail || '',
+      timestamp: new Date().toISOString(),
+    };
+    feedbackStore.unshift(entry);
+    console.log(`[Feedback] ${entry.type} from ${entry.userName}: ${entry.message.slice(0, 80)}`);
+    res.json({ success: true, id: entry.id });
+  });
+
+  app.get('/api/feedback', (req, res) => {
+    res.json({ feedback: feedbackStore });
+  });
+
+  // ----------------------------------------------------
   // API: Health Check
   // ----------------------------------------------------
   app.get('/api/health', (req, res) => {

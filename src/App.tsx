@@ -11,6 +11,7 @@ import { ReferralAIAssistant } from './components/ReferralAIAssistant';
 import { LinkedInConnectModal } from './components/LinkedInConnectModal';
 import { LinkedInSyncModal } from './components/LinkedInSyncModal';
 import { AuthCallback } from './components/AuthCallback';
+import { HelpButton } from './components/HelpButton';
 
 // Views
 import { DashboardView } from './views/DashboardView';
@@ -98,6 +99,7 @@ const AppContent: React.FC = () => {
       <LinkedInConnectModal />
       <LinkedInSyncModal />
       <AuthCallback />
+      <HelpButton />
     </div>
   );
 };
